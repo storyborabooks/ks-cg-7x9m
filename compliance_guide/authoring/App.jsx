@@ -172,6 +172,19 @@ function sanitizeForPreview(c) {
     const cc = out.citations.filter(s => s.trim());
     if (cc.length) out.citations = cc; else delete out.citations;
   }
+  // Ensure sectionOrder includes all known section IDs so that sections added
+  // after a draft was first saved still appear in the preview / export.
+  if (out.sectionOrder) {
+    const canonical = BLANK_CONTENT.sectionOrder;
+    const missing = canonical.filter(id => !out.sectionOrder.includes(id));
+    if (missing.length) {
+      const order = [...out.sectionOrder];
+      const citIdx = order.indexOf("citations");
+      if (citIdx !== -1) order.splice(citIdx, 0, ...missing);
+      else order.push(...missing);
+      out.sectionOrder = order;
+    }
+  }
   return out;
 }
 
