@@ -348,12 +348,12 @@ function App() {
       const poll = setInterval(() => {
         checks++;
         const root = iframe.contentDocument.getElementById("root");
-        const hasContent = root && root.children.length > 0 && root.querySelector(".cg-sheet");
+        const hasContent = root && root.children.length > 0 && root.querySelector(".cg-sheet:not(.cg-measure-sheet)");
         if (hasContent || checks > 60) { clearInterval(poll); setTimeout(ok, 600); }
       }, 300);
     });
     const target = iframe.contentDocument.querySelector(".cg-viewer") || iframe.contentDocument.getElementById("root");
-    const sheets = iframe.contentDocument.querySelectorAll(".cg-sheet");
+    const sheets = iframe.contentDocument.querySelectorAll(".cg-sheet:not(.cg-measure-sheet)");
     if (!sheets.length) {
       showToast("PDF failed: no pages rendered");
       document.body.removeChild(iframe);
