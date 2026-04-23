@@ -134,6 +134,7 @@
   flex-direction: column;
   gap: 20pt;
   min-height: 0;
+  overflow: hidden;
 }
 .cg-sec-wrap { break-inside: avoid; }
 
@@ -682,7 +683,7 @@
   display: flex; justify-content: center;
   padding: 12pt;
 }
-.cg-ex-img { max-width: 100%; height: auto; display: block; border-radius: 4pt; }
+.cg-ex-img { max-width: 100%; max-height: 6in; width: auto; height: auto; display: block; border-radius: 4pt; object-fit: contain; }
 .cg-ex-badge {
   position: absolute; top: 10pt; right: 10pt;
   font-family: var(--font-display);

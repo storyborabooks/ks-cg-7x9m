@@ -87,6 +87,7 @@ html[data-cg-embedded] .cg-viewer-bar { display: none !important; }
 .cg-sheet {
   width: var(--page-w);
   min-height: var(--page-h);
+  height: var(--page-h);
   background: #fff;
   box-shadow: 0 4px 14px rgba(15, 22, 72, 0.06), 0 20px 50px rgba(15, 22, 72, 0.12);
   position: relative;
@@ -94,6 +95,8 @@ html[data-cg-embedded] .cg-viewer-bar { display: none !important; }
   box-sizing: border-box;
   color: var(--fg-1);
 }
+/* Measurement sheet must grow to its natural height for pagination math. */
+.cg-measure-sheet { height: auto; }
 
 /* Print: just the sheet. */
 @media print {

@@ -150,6 +150,7 @@
   flex-direction: column;
   gap: 20pt;
   min-height: 0;
+  overflow: hidden;
 }
 .cg-sec-wrap { break-inside: avoid; }
 
@@ -665,9 +666,12 @@
 }
 .cg-ex-img {
   max-width: 100%;
+  max-height: 6in;
+  width: auto;
   height: auto;
   display: block;
   border-radius: 6pt;
+  object-fit: contain;
 }
 .cg-ex-badge {
   position: absolute;
