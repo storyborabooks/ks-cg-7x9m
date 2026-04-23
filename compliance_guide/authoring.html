@@ -343,6 +343,75 @@
       background: var(--paper);
     }
 
+    /* ---------- Icon picker ---------- */
+    .icon-picker-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border: 1px solid var(--rule-2);
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      color: var(--ink);
+      width: 100%;
+    }
+    .icon-picker-trigger:hover { border-color: var(--navy-800); }
+    .icon-picker-trigger svg { flex-shrink: 0; color: var(--navy-800); }
+    .icon-picker-trigger .icon-name { color: var(--ink-mute); font-size: 12px; }
+    .icon-picker-popover {
+      position: absolute;
+      z-index: 50;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
+      background: #fff;
+      border: 1px solid var(--rule-2);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 22, 72, 0.12);
+      padding: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    .icon-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+      gap: 2px;
+    }
+    .icon-picker-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 6px 2px;
+      border: 0;
+      background: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--ink-mute);
+    }
+    .icon-picker-option:hover {
+      background: var(--navy-100);
+      color: var(--navy-800);
+    }
+    .icon-picker-option.selected {
+      background: rgba(50, 150, 210, 0.1);
+      color: var(--navy-800);
+      outline: 2px solid rgba(50, 150, 210, 0.4);
+    }
+    .icon-picker-option .icon-label {
+      font-size: 8px;
+      line-height: 1;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 44px;
+    }
+
     /* Draft list / empty state */
     .intro-card {
       background: #fff;
@@ -399,6 +468,8 @@
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
   <script type="text/babel" src="./authoring/AuthoringForm.jsx"></script>
   <script type="text/babel" src="./authoring/App.jsx"></script>
 </body>
