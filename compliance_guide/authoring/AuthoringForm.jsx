@@ -9,7 +9,9 @@
 // Default section order used when content.sectionOrder is missing.
 const DEFAULT_SECTION_ORDER = [
   "summary", "background", "legislation", "tiles",
-  "keyRequirements", "howToImplement", "otherFactors", "citations",
+  "keyRequirements", "howToImplement", "otherFactors",
+  "iconGrid", "comparison", "processFlow", "calloutCard",
+  "citations",
 ];
 
 // ---------- Section registry ----------
@@ -269,6 +271,219 @@ const SECTION_DEFS = {
           value={c.otherFactors?.body || ""}
           rows={4}
           onChange={v => update(["otherFactors", "body"], v)}
+        />
+      </>
+    ),
+  },
+  iconGrid: {
+    title: "Icon Grid",
+    desc: "2-column grid of icon cards with title + description",
+    filled: c => !!(c.iconGrid?.items?.some(it => it.title?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        <TextField
+          label="Section heading"
+          hint="Eyebrow text above the grid. Default: 'Overview'"
+          value={c.iconGrid?.heading || ""}
+          onChange={v => update(["iconGrid", "heading"], v)}
+        />
+        {(c.iconGrid?.items || []).map((item, i) => (
+          <ItemRow
+            key={i}
+            num={`Card ${i+1}`}
+            onUp={i > 0 ? () => moveItem(["iconGrid", "items"], i, -1) : null}
+            onDown={i < (c.iconGrid.items.length - 1) ? () => moveItem(["iconGrid", "items"], i, 1) : null}
+            onDelete={() => removeItem(["iconGrid", "items"], i)}
+          >
+            <div className="field-row">
+              <IconField
+                label="Icon"
+                value={item.icon || "shield-check"}
+                onChange={v => update(["iconGrid", "items", i, "icon"], v)}
+              />
+              <TextField
+                label="Title"
+                value={item.title || ""}
+                onChange={v => update(["iconGrid", "items", i, "title"], v)}
+              />
+            </div>
+            <TextAreaField
+              label="Description"
+              hint="1–2 sentences explaining this point"
+              value={item.body || ""}
+              rows={2}
+              onChange={v => update(["iconGrid", "items", i, "body"], v)}
+            />
+          </ItemRow>
+        ))}
+        <button
+          className="add-item"
+          onClick={() => pushItem(["iconGrid", "items"], { icon: "shield-check", title: "", body: "" })}
+        >
+          + Add card
+        </button>
+      </>
+    ),
+  },
+  comparison: {
+    title: "Comparison",
+    desc: "Side-by-side columns (before/after, do/don't, old/new)",
+    filled: c => !!(c.comparison?.left?.items?.some(s => s.trim()) || c.comparison?.right?.items?.some(s => s.trim())),
+    render: (c, { update, pushItem, removeItem }) => {
+      const cmp = c.comparison || { heading: "", left: { label: "", icon: "", items: [] }, right: { label: "", icon: "", items: [] }};
+      return (
+        <>
+          <TextField
+            label="Section heading"
+            hint="Eyebrow text. Default: 'Comparison'"
+            value={cmp.heading || ""}
+            onChange={v => update(["comparison", "heading"], v)}
+          />
+          <div className="field-row">
+            <div style={{flex: 1}}>
+              <h4 className="sub-heading">Left column</h4>
+              <div className="field-row">
+                <IconField
+                  label="Icon"
+                  value={cmp.left?.icon || "check-circle"}
+                  onChange={v => update(["comparison", "left", "icon"], v)}
+                />
+                <TextField
+                  label="Label"
+                  hint="e.g. 'Before', 'Do', 'Required'"
+                  value={cmp.left?.label || ""}
+                  onChange={v => update(["comparison", "left", "label"], v)}
+                />
+              </div>
+              {(cmp.left?.items || []).map((item, i) => (
+                <div key={i} className="inline-item">
+                  <TextField
+                    hideLabel
+                    value={item}
+                    onChange={v => update(["comparison", "left", "items", i], v)}
+                  />
+                  <button className="remove-btn" onClick={() => removeItem(["comparison", "left", "items"], i)}>×</button>
+                </div>
+              ))}
+              <button className="add-item" onClick={() => pushItem(["comparison", "left", "items"], "")}>+ Add item</button>
+            </div>
+            <div style={{flex: 1}}>
+              <h4 className="sub-heading">Right column</h4>
+              <div className="field-row">
+                <IconField
+                  label="Icon"
+                  value={cmp.right?.icon || "x-circle"}
+                  onChange={v => update(["comparison", "right", "icon"], v)}
+                />
+                <TextField
+                  label="Label"
+                  hint="e.g. 'After', 'Don't', 'Prohibited'"
+                  value={cmp.right?.label || ""}
+                  onChange={v => update(["comparison", "right", "label"], v)}
+                />
+              </div>
+              {(cmp.right?.items || []).map((item, i) => (
+                <div key={i} className="inline-item">
+                  <TextField
+                    hideLabel
+                    value={item}
+                    onChange={v => update(["comparison", "right", "items", i], v)}
+                  />
+                  <button className="remove-btn" onClick={() => removeItem(["comparison", "right", "items"], i)}>×</button>
+                </div>
+              ))}
+              <button className="add-item" onClick={() => pushItem(["comparison", "right", "items"], "")}>+ Add item</button>
+            </div>
+          </div>
+        </>
+      );
+    },
+  },
+  processFlow: {
+    title: "Process Flow",
+    desc: "Horizontal step-by-step flow with icons and arrows",
+    filled: c => !!(c.processFlow?.items?.some(s => s.label?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        <TextField
+          label="Section heading"
+          hint="Eyebrow text. Default: 'Process'"
+          value={c.processFlow?.heading || ""}
+          onChange={v => update(["processFlow", "heading"], v)}
+        />
+        {(c.processFlow?.items || []).map((step, i) => (
+          <ItemRow
+            key={i}
+            num={`Step ${i+1}`}
+            onUp={i > 0 ? () => moveItem(["processFlow", "items"], i, -1) : null}
+            onDown={i < (c.processFlow.items.length - 1) ? () => moveItem(["processFlow", "items"], i, 1) : null}
+            onDelete={() => removeItem(["processFlow", "items"], i)}
+          >
+            <div className="field-row">
+              <IconField
+                label="Icon"
+                value={step.icon || "circle"}
+                onChange={v => update(["processFlow", "items", i, "icon"], v)}
+              />
+              <TextField
+                label="Label"
+                hint="Short — 2–4 words"
+                value={step.label || ""}
+                onChange={v => update(["processFlow", "items", i, "label"], v)}
+              />
+            </div>
+            <TextField
+              label="Subtext"
+              hint="Optional detail line"
+              value={step.sub || ""}
+              onChange={v => update(["processFlow", "items", i, "sub"], v)}
+            />
+          </ItemRow>
+        ))}
+        <button
+          className="add-item"
+          onClick={() => pushItem(["processFlow", "items"], { icon: "circle", label: "", sub: "" })}
+        >
+          + Add step
+        </button>
+      </>
+    ),
+  },
+  calloutCard: {
+    title: "Callout Card",
+    desc: "Emphasized box with icon, heading, and body text",
+    filled: c => !!(c.calloutCard?.heading?.trim()),
+    render: (c, { update }) => (
+      <>
+        <div className="field-row">
+          <IconField
+            label="Icon"
+            value={c.calloutCard?.icon || "alert-triangle"}
+            onChange={v => update(["calloutCard", "icon"], v)}
+          />
+          <SelectField
+            label="Variant"
+            value={c.calloutCard?.variant || "info"}
+            options={[
+              { value: "info", label: "Info (blue)" },
+              { value: "warning", label: "Warning (amber)" },
+              { value: "success", label: "Success (green)" },
+              { value: "danger", label: "Danger (red)" },
+            ]}
+            onChange={v => update(["calloutCard", "variant"], v)}
+          />
+        </div>
+        <TextField
+          label="Heading"
+          value={c.calloutCard?.heading || ""}
+          onChange={v => update(["calloutCard", "heading"], v)}
+        />
+        <TextAreaField
+          label="Body"
+          hint="1–3 sentences"
+          value={c.calloutCard?.body || ""}
+          rows={3}
+          onChange={v => update(["calloutCard", "body"], v)}
         />
       </>
     ),
@@ -582,6 +797,19 @@ function StatusField({ label, value, onChange }) {
   );
 }
 
+function SelectField({ label, value, options, onChange }) {
+  return (
+    <label className="field">
+      <div className="field-label"><span>{label}</span></div>
+      <select value={value} onChange={e => onChange(e.target.value)}>
+        {options.map(o => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 // Curated list of Lucide icons that work well as compliance tile glyphs.
 // Authors pick by name; CGIcon resolves name → SVG path.
 const TILE_ICONS = [
@@ -596,6 +824,7 @@ const TILE_ICONS = [
   "globe", "map-pin",
   "book", "book-open",
   "search", "filter",
+  "check-circle", "x-circle", "circle", "arrow-right",
 ];
 
 function IconField({ label, value, onChange }) {
