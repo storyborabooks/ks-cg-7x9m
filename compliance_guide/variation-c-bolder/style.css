@@ -1,0 +1,463 @@
+/* Variation C — SEAL.
+   Leans hard into the kidSAFE BRAND — the "seal" metaphor. Page 1 has a
+   hero with a big certification-style seal graphic; body pages use rounded
+   cards with the peach + sky + gold palette rotating through numbered items.
+   Friendly, visual, and obviously kidSAFE — not generic compliance-doc.
+
+   Families:
+     - Poppins throughout (display). Peach cream body tint. Sky banner.
+     - Gold hairline accents. Numbered items use big circular "seal" chips
+       alternating sky/gold/peach/navy.
+*/
+
+.cg-sheet {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #fff;
+}
+
+/* Body text gets a touch more weight so the page reads like marketing-adjacent
+   material, not a legal opinion. */
+.cg-sheet p { color: var(--fg-1); font-size: 10.5pt; line-height: 1.5; }
+
+/* ---------- Page 1 hero: big "seal" cover ---------- */
+.cg-sheet-head {
+  position: relative;
+  background:
+    linear-gradient(180deg, #fdf5ea 0%, #fffaf2 85%, #ffffff 100%);
+  padding: 0.45in var(--page-pad-x) 0.55in;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 26pt;
+  align-items: center;
+  min-height: 2.6in;
+  overflow: hidden;
+  border-bottom: 3px solid var(--gold-500);
+}
+
+/* Soft sky-blue wash in the upper-right, behind the logo. Smaller than the
+   original seal-shaped wash since we no longer frame the logo in a circle. */
+.cg-sheet-head::before {
+  content: "";
+  position: absolute;
+  right: -1.4in;
+  top: -1.2in;
+  width: 4in;
+  height: 4in;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 50%, #d7ecf8 0%, #d7ecf8 55%, rgba(215,236,248,0) 85%);
+  z-index: 0;
+}
+.cg-sheet-head > * { position: relative; z-index: 1; }
+
+.cg-head-text { align-self: center; }
+.cg-head-topic {
+  font-family: var(--font-display);
+  font-size: 10pt;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-600);
+  margin-bottom: 10pt;
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+}
+.cg-head-topic::before {
+  content: "";
+  width: 22pt;
+  height: 2px;
+  background: var(--gold-500);
+}
+.cg-head-title,
+.cg-sheet .cg-head-title {
+  font-family: var(--font-display);
+  font-size: 32pt;
+  font-weight: 800;
+  line-height: 1.03;
+  color: var(--navy-800);
+  letter-spacing: -0.02em;
+  margin: 0 0 12pt;
+}
+.cg-head-meta {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navy-600);
+  display: flex;
+  gap: 10pt;
+  align-items: center;
+}
+.cg-head-sep { color: var(--gold-500); font-weight: 800; }
+
+/* Logo sits cleanly on the hero — no circular frame, so the wordmark keeps
+   its natural horizontal shape. Size matches Variation A so it reads as the
+   same brand lockup across the system. */
+.cg-head-logo {
+  justify-self: center;
+  height: 78px;
+  width: auto;
+  object-fit: contain;
+  object-position: center;
+  /* Nudge up-and-right so the wordmark sits cleanly inside the peach wash
+     instead of crossing its left edge. */
+  transform: translate(14pt, -18pt);
+}
+
+/* ---------- Running head for continuation pages ---------- */
+.cg-sheet-running {
+  background: var(--sky-500);
+  color: #fff;
+  padding: 11pt var(--page-pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--gold-500);
+}
+.cg-running-text {
+  font-family: var(--font-display);
+  font-size: 10pt;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+}
+.cg-running-title { font-weight: 700; }
+.cg-running-sep { color: var(--gold-400); }
+.cg-running-sub {
+  font-weight: 700;
+  font-size: 8.5pt;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+}
+.cg-running-logo {
+  height: 24px;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 6pt;
+  box-sizing: content-box;
+}
+
+/* ---------- Body ---------- */
+.cg-sheet-body {
+  flex: 1;
+  padding: 22pt var(--page-pad-x) var(--page-pad-bot);
+  display: flex;
+  flex-direction: column;
+  gap: 20pt;
+  min-height: 0;
+}
+.cg-sec-wrap { break-inside: avoid; }
+
+/* Summary — big, warm, quote-like */
+.cg-summary {
+  font-family: var(--font-display);
+  font-size: 14pt;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--navy-800);
+  letter-spacing: -0.005em;
+  margin: 0;
+  padding: 14pt 18pt 14pt 22pt;
+  background: #fdf5ea;
+  border-radius: 10pt;
+  position: relative;
+  border-left: 4px solid var(--gold-500);
+}
+
+/* ---------- Section frames ---------- */
+.cg-sec {
+  display: block;
+}
+.cg-sec > .cg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7pt;
+  margin-bottom: 10pt;
+  color: var(--sky-600);
+  font-size: 9pt;
+  letter-spacing: 0.18em;
+  padding: 0;
+  border: none;
+}
+.cg-sec > .cg-eyebrow::before {
+  content: "";
+  width: 14pt;
+  height: 2px;
+  background: var(--sky-500);
+  border-radius: 2px;
+}
+
+/* Introductory copy under a section eyebrow */
+.cg-sec-intro {
+  color: var(--fg-2);
+  font-size: 10.5pt;
+  margin-bottom: 10pt;
+}
+
+/* ---------- Legislation cards — rounded, alternating tints ---------- */
+.cg-leg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10pt;
+}
+.cg-leg-card {
+  background: #fff;
+  border-radius: 10pt;
+  padding: 12pt 14pt;
+  border: 1.5pt solid var(--ink-100);
+  display: flex;
+  flex-direction: column;
+  gap: 5pt;
+  break-inside: avoid;
+  position: relative;
+  overflow: hidden;
+}
+.cg-leg-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 5pt;
+  background: var(--sky-500);
+}
+/* Cycle the left-band color across cards so a 4-card grid looks like a family. */
+.cg-leg-card:nth-child(4n+2)::before { background: var(--gold-500); }
+.cg-leg-card:nth-child(4n+3)::before { background: var(--peach-500, #f0b080); }
+.cg-leg-card:nth-child(4n+4)::before { background: var(--navy-700); }
+
+.cg-leg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.cg-leg-juris {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy-800);
+}
+.cg-leg-eff {
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  color: var(--fg-3);
+}
+.cg-leg-title {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.25;
+  margin: 0;
+}
+.cg-leg-note {
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--fg-3);
+  margin: 2pt 0 0;
+}
+.cg-leg-status { margin-top: 2pt; }
+
+/* ---------- Key Requirements — big "seal" number chips ---------- */
+.cg-req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10pt;
+}
+.cg-req {
+  display: grid;
+  grid-template-columns: 44pt 1fr;
+  gap: 14pt;
+  align-items: start;
+  padding: 12pt 14pt;
+  background: #fff;
+  border-radius: 10pt;
+  border: 1.5pt solid var(--ink-100);
+  break-inside: avoid;
+}
+.cg-req-num {
+  font-family: var(--font-display);
+  font-size: 14pt;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  background: var(--sky-500);
+  width: 36pt;
+  height: 36pt;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.02em;
+  box-shadow: 0 0 0 3pt #fff, 0 0 0 4pt var(--sky-500);
+}
+/* Rotate the seal color across requirements — sky → gold → peach → navy */
+.cg-req:nth-child(4n+2) .cg-req-num { background: var(--gold-500); box-shadow: 0 0 0 3pt #fff, 0 0 0 4pt var(--gold-500); }
+.cg-req:nth-child(4n+3) .cg-req-num { background: #e89560; box-shadow: 0 0 0 3pt #fff, 0 0 0 4pt #e89560; }
+.cg-req:nth-child(4n+4) .cg-req-num { background: var(--navy-700); box-shadow: 0 0 0 3pt #fff, 0 0 0 4pt var(--navy-700); }
+
+.cg-req-title {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  margin: 2pt 0 3pt;
+  letter-spacing: -0.005em;
+}
+.cg-req-copy { margin: 0; }
+
+/* ---------- Tiles — playful seal row ---------- */
+.cg-tile-row {
+  display: grid;
+  gap: 8pt;
+}
+.cg-tile-row.n-3 { grid-template-columns: repeat(3, 1fr); }
+.cg-tile-row.n-4 { grid-template-columns: repeat(4, 1fr); }
+.cg-tile-row.n-5 { grid-template-columns: repeat(5, 1fr); }
+.cg-tile {
+  background: #fff;
+  border-radius: 12pt;
+  padding: 14pt 12pt;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6pt;
+  border: 1.5pt solid var(--ink-100);
+  break-inside: avoid;
+}
+.cg-tile-icon {
+  width: 40pt; height: 40pt;
+  border-radius: 50%;
+  background: var(--sky-500);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cg-tile:nth-child(4n+2) .cg-tile-icon { background: var(--gold-500); }
+.cg-tile:nth-child(4n+3) .cg-tile-icon { background: #e89560; }
+.cg-tile:nth-child(4n+4) .cg-tile-icon { background: var(--navy-700); }
+
+.cg-tile-label {
+  font-family: var(--font-display);
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  line-height: 1.2;
+}
+.cg-tile-sub {
+  font-size: 8.5pt;
+  color: var(--fg-3);
+  line-height: 1.3;
+}
+
+/* ---------- How-to-implement — circular check seals ---------- */
+.cg-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9pt;
+}
+.cg-check-item {
+  display: grid;
+  grid-template-columns: 28pt 1fr;
+  gap: 12pt;
+  align-items: start;
+  padding: 10pt 14pt;
+  background: #fafbfc;
+  border-radius: 8pt;
+  break-inside: avoid;
+}
+.cg-check-marker { padding-top: 1pt; }
+.cg-check-num { display: none; }
+.cg-check-box {
+  width: 22pt; height: 22pt;
+  border-radius: 50%;
+  background: var(--sky-500);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2pt 6pt rgba(50, 150, 210, 0.3);
+  flex-shrink: 0;
+}
+.cg-check-body { font-size: 10pt; line-height: 1.45; color: var(--fg-2); }
+.cg-check-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy-800);
+}
+
+/* ---------- Other Factors callout ---------- */
+.cg-callout {
+  background: #fdf5ea;
+  border: 1.5pt solid var(--gold-400);
+  border-left: 5pt solid var(--gold-500);
+  border-radius: 10pt;
+  padding: 14pt 18pt;
+}
+.cg-callout-eyebrow {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+  margin-bottom: 4pt;
+  display: flex;
+  align-items: center;
+  gap: 7pt;
+}
+.cg-callout-eyebrow::before {
+  content: "";
+  width: 14pt; height: 2px;
+  background: var(--gold-500);
+}
+.cg-callout-title,
+.cg-sheet .cg-callout-title {
+  font-size: 13pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  margin: 0 0 6pt;
+}
+.cg-callout .cg-callout-body,
+.cg-sheet .cg-callout .cg-callout-body {
+  margin: 0;
+  font-size: 10pt;
+  color: var(--fg-1);
+  line-height: 1.5;
+}
+
+/* ---------- Citations ---------- */
+.cg-citations {
+  padding-left: 16pt;
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.45;
+  color: var(--fg-3);
+}
+.cg-citations li { margin-bottom: 3pt; }
+
+/* ---------- Footer ---------- */
+.cg-page-foot {
+  margin: auto var(--page-pad-x) 0;
+  padding: 10pt 0 0.35in;
+  border-top: 1px solid var(--gold-300);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+}
+.cg-foot-page .cg-foot-of { color: var(--ink-300); }
