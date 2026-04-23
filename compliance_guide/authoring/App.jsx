@@ -509,7 +509,10 @@ function buildStandaloneHtml(content, variant) {
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
 
-  <script>window.CG_CONTENT = ${JSON.stringify(content, null, 2)};</script>
+  <script>
+    window.CG_CONTENT = ${JSON.stringify(content, null, 2)};
+    window.CG_LOGO_URL = "${new URL("../assets/logo_kidsafe.png", window.location.href).href}";
+  </script>
   <script type="text/babel" src="./shared/CGIcon.jsx"></script>
   <script type="text/babel" src="./shared/sections.jsx"></script>
   <script type="text/babel">
