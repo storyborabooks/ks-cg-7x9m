@@ -220,17 +220,22 @@ function SecCitations({ items }) {
 // for the typical 1–3 page guides.
 
 function CGGuide({ c, fullHeaderEveryPage = false }) {
-  // Build the ordered list of sections to render, skipping empty ones.
-  const sections = [];
-  if (c.summary)        sections.push(<CGSummary key="summary" text={c.summary} />);
-  if (c.background?.length)      sections.push(<SecBackground    key="bg" items={c.background} />);
-  if (c.legislation?.length)     sections.push(<SecLegislation   key="leg" cards={c.legislation} />);
-  if (c.tiles?.length)           sections.push(<SecTiles         key="tiles" items={c.tiles} />);
-  if (c.keyRequirements?.length) sections.push(<SecKeyRequirements key="req" items={c.keyRequirements} />);
+  // Map of section-id → React element (only if data is present).
+  const sectionMap = {};
+  if (c.summary)               sectionMap.summary        = <CGSummary key="summary" text={c.summary} />;
+  if (c.background?.length)    sectionMap.background      = <SecBackground key="bg" items={c.background} />;
+  if (c.legislation?.length)   sectionMap.legislation      = <SecLegislation key="leg" cards={c.legislation} />;
+  if (c.tiles?.length)         sectionMap.tiles            = <SecTiles key="tiles" items={c.tiles} />;
+  if (c.keyRequirements?.length) sectionMap.keyRequirements = <SecKeyRequirements key="req" items={c.keyRequirements} />;
   if (c.howToImplement?.items?.length)
-    sections.push(<SecHowToImplement key="how" intro={c.howToImplement.intro} items={c.howToImplement.items} />);
-  if (c.otherFactors)            sections.push(<SecOtherFactors  key="other" title={c.otherFactors.title} body={c.otherFactors.body} />);
-  if (c.citations?.length)       sections.push(<SecCitations     key="cite" items={c.citations} />);
+    sectionMap.howToImplement = <SecHowToImplement key="how" intro={c.howToImplement.intro} items={c.howToImplement.items} />;
+  if (c.otherFactors)          sectionMap.otherFactors     = <SecOtherFactors key="other" title={c.otherFactors.title} body={c.otherFactors.body} />;
+  if (c.citations?.length)     sectionMap.citations        = <SecCitations key="cite" items={c.citations} />;
+
+  // Build ordered list respecting sectionOrder (if provided), falling back to default.
+  const defaultOrder = ["summary","background","legislation","tiles","keyRequirements","howToImplement","otherFactors","citations"];
+  const order = c.sectionOrder || defaultOrder;
+  const sections = order.map(id => sectionMap[id]).filter(Boolean);
 
   const [pages, setPages] = useState([sections]); // start with one page, refine after measure
   const measureRef = useRef(null);
