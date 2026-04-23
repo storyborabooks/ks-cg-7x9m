@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Preview</title>
+  <!-- Stylesheets are injected dynamically below, each with a per-load
+       version stamp so variant switches + CSS edits during dev always pick
+       up the latest. (The serve endpoint validates a token on the path, but
+       allows arbitrary `?v=` query params, unlike an exact-match cache key.) -->
+  <script>
+    // Resolve variant from URL, inject all stylesheets with a fresh version
+    // stamp. When the parent changes the variant, it reloads this iframe
+    // with a new `?v=...` query — at which point we re-run and rebuild the
+    // <link> tags with a new stamp, guaranteeing a fresh stylesheet.
+    (function () {
+      const v = new URLSearchParams(location.search).get("v") || "a";
+      const folder = ({
+        a: "variation-a-conservative",
+        b: "variation-b-balanced",
+        c: "variation-c-bolder",
+        d: "variation-d-workbook",
+      })[v] || "variation-a-conservative";
+      const stamp = Date.now().toString(36);
+      const stylesheets = [
+        `../../colors_and_type.css?v=${stamp}`,
+        `../shared/tokens.css?v=${stamp}`,
+        `../shared/bubbles.css?v=${stamp}`,
+        `../${folder}/style.css?v=${stamp}`,
+      ];
+      for (const href of stylesheets) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = href;
+        document.head.appendChild(link);
+      }
+      // Match embed-mode styles so the viewer chrome stays hidden in the
+      // authoring preview the same way it does when framed by the canvas.
+      document.documentElement.setAttribute("data-cg-embedded", "1");
+    })();
+  </script>
+  <style>
+    body { margin: 0; background: #e9e6df; }
+    .pv-scroll {
+      height: 100vh;
+      overflow-y: auto;
+      /* We scale the inner sheets to fit the pane. Padding goes on the
+         inner wrapper, not the scroll host, so the scrollbar hugs the edge. */
+      padding: 0;
+    }
+    .pv-inner {
+      /* Zoom is applied to this; sheets render at their natural 8.5x11 size
+         and we shrink/enlarge from the top-center. */
+      padding: 18px 0 36px;
+      transform-origin: top center;
+      /* scale is set dynamically by the script below */
+      transition: transform 0.12s ease-out;
+    }
+    .pv-empty {
+      max-width: 360px;
+      margin: 18vh auto;
+      text-align: center;
+      color: rgba(15, 22, 72, 0.5);
+      font-family: "Work Sans", system-ui, sans-serif;
+    }
+    .pv-empty h3 {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-weight: 400;
+      color: rgba(15, 22, 72, 0.75);
+      font-size: 22px;
+      margin: 0 0 8px;
+    }
+    .pv-empty p {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="pv-scroll">
+    <div class="pv-inner" id="pv-inner">
+      <div id="root">
+        <div class="pv-empty">
+          <h3>Live preview</h3>
+          <p>As you fill in the form on the left, your guide will render here.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+  <script type="text/babel" src="../shared/CGIcon.jsx"></script>
+  <script type="text/babel" src="../shared/sections.jsx"></script>
+  <script type="text/babel">
+    // Listen for content posts from the parent window and re-render on each.
+    const rootEl = document.getElementById("root");
+    let root = null;
+
+    // Tell the authoring app we are ready; it may have posted before we
+    // mounted this listener. This prompt guarantees a fresh post.
+    function postReady() {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: "cg:preview:ready" }, "*");
+      }
+    }
+
+    window.addEventListener("message", ev => {
+      const msg = ev.data || {};
+      if (msg.type !== "cg:content") return;
+      if (!root) root = ReactDOM.createRoot(rootEl);
+      const c = msg.content || {};
+      // If content is empty-ish (no title and no sections), show the placeholder.
+      const hasAny =
+        c.title?.trim() ||
+        c.summary?.trim() ||
+        c.background?.length ||
+        c.legislation?.length ||
+        c.tiles?.length ||
+        c.keyRequirements?.length ||
+        c.howToImplement?.items?.length ||
+        c.otherFactors?.title?.trim() ||
+        c.otherFactors?.body?.trim() ||
+        c.citations?.length;
+      if (!hasAny) {
+        root.render(
+          <div className="pv-empty">
+            <h3>Live preview</h3>
+            <p>As you fill in the form on the left, your guide will render here.</p>
+          </div>
+        );
+        return;
+      }
+      root.render(<CGGuide c={c} fullHeaderEveryPage={true} />);
+    });
+
+    // Ready nudge on load.
+    postReady();
+  </script>
+  <script src="../shared/viewer.js" defer></script>
+  <script>
+    // Fit-to-width scaling. The sheet is 816px wide; scale the inner wrapper
+    // so it never overflows the preview pane horizontally. Re-applies on
+    // resize.
+    (function () {
+      const inner = document.getElementById('pv-inner');
+      const SHEET_W = 816;
+      const MARGIN = 24;
+      function fit() {
+        const avail = window.innerWidth - MARGIN * 2;
+        if (avail <= 0) return;
+        const scale = Math.min(1, avail / SHEET_W);
+        inner.style.transform = `scale(${scale})`;
+        // Compensate height: scaled content reports its pre-scale layout
+        // height, so scroll container would overshoot. Shrink the wrapper's
+        // effective height via margin-bottom = negative (1-scale) * naturalH.
+        // We read naturalH after each layout via rAF.
+        requestAnimationFrame(() => {
+          const natural = inner.scrollHeight;
+          inner.style.marginBottom = `${-(natural) * (1 - scale)}px`;
+        });
+      }
+      window.addEventListener('resize', fit);
+      fit();
+      // Re-fit after content changes (sheets appear / disappear).
+      const ro = new ResizeObserver(fit);
+      ro.observe(inner);
+    })();
+  </script>
+</body>
+</html>
