@@ -1,0 +1,148 @@
+/* Shared print-page tokens for all Compliance Guide variations.
+   Imports brand tokens from colors_and_type.css at project root.
+   Use with <link rel="stylesheet" href="../../colors_and_type.css"> first, then this file. */
+
+:root {
+  /* US Letter at 96 dpi, portrait. */
+  --page-w: 8.5in;
+  --page-h: 11in;
+
+  /* Working margins for the guide body (shared across variations). */
+  --page-pad-x: 0.6in;
+  --page-pad-top: 0.55in;
+  --page-pad-bot: 0.55in;
+
+  /* Slightly different type scale optimised for print density vs. screen. */
+  --p-body:    10.5pt;
+  --p-lead:    11pt;
+  --p-caption: 9pt;
+  --p-eyebrow: 9pt;
+  --p-h1:      24pt;
+  --p-h2:      14pt;
+  --p-h3:      11.5pt;
+  --p-h4:      10.5pt;
+
+  --p-lh-body:    1.45;
+  --p-lh-tight:   1.2;
+  --p-lh-heading: 1.15;
+}
+
+/* ==========================================================================
+   Screen viewer chrome — a neutral workspace around the printed sheet.
+   Hidden at @media print so the PDF is just the page.
+   ========================================================================== */
+html, body { margin: 0; background: #e9ecf1; color: var(--fg-2); font-family: var(--font-body); }
+
+/* When embedded in an iframe (design-canvas thumbnails), strip the padded
+   workspace so sheets sit flush inside the fixed 8.5-inch-wide frame. The
+   attribute is set synchronously in <head> by an inline script before any
+   layout runs, so the embedded state is applied on first paint. */
+html[data-cg-embedded] body { background: #fff; }
+html[data-cg-embedded] .cg-viewer {
+  padding: 0 !important;
+  gap: 0 !important;
+  min-height: 0;
+}
+html[data-cg-embedded] .cg-sheet { box-shadow: none !important; }
+html[data-cg-embedded] .cg-viewer-bar { display: none !important; }
+
+.cg-viewer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 28px 80px;
+  gap: 20px;
+}
+
+.cg-viewer-bar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 22, 72, 0.92);
+  color: #fff;
+  backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(15, 22, 72, 0.2);
+}
+.cg-viewer-bar .label { opacity: .7; letter-spacing: .08em; text-transform: uppercase; font-size: 10.5px; }
+.cg-viewer-bar .sep { width: 1px; height: 16px; background: rgba(255,255,255,.2); }
+.cg-viewer-bar button {
+  background: #fff; color: var(--navy-800); border: 0;
+  padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: 11.5px;
+}
+.cg-viewer-bar button:hover { background: var(--sky-100); }
+
+/* The sheet itself — a real US Letter page. */
+.cg-sheet {
+  width: var(--page-w);
+  min-height: var(--page-h);
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 22, 72, 0.06), 0 20px 50px rgba(15, 22, 72, 0.12);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--fg-1);
+}
+
+/* Print: just the sheet. */
+@media print {
+  @page { size: Letter portrait; margin: 0; }
+  html, body { background: #fff; }
+  .cg-viewer { padding: 0; gap: 0; }
+  .cg-viewer-bar { display: none !important; }
+  .cg-sheet { box-shadow: none; width: 8.5in; min-height: 11in; page-break-after: always; }
+  .cg-sheet:last-of-type { page-break-after: auto; }
+}
+
+/* ==========================================================================
+   Generic typography helpers shared by all variations.
+   ========================================================================== */
+.cg-sheet p { margin: 0 0 6pt; font-size: var(--p-body); line-height: var(--p-lh-body); color: var(--fg-2); }
+.cg-sheet p:last-child { margin-bottom: 0; }
+/* Unscoped h1..h4 default — only sets font, letter-spacing, and a tight
+   line-height. Explicit color/size/weight live on the variation's class
+   selectors so they don't get overridden by this rule's specificity. */
+.cg-sheet h1, .cg-sheet h2, .cg-sheet h3, .cg-sheet h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  line-height: var(--p-lh-heading);
+  letter-spacing: -0.005em;
+}
+.cg-sheet a { color: var(--sky-600); text-decoration: none; }
+
+.cg-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--p-eyebrow);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--navy-800);
+}
+
+/* Status chip — shared across variations. */
+.cg-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 9px; border-radius: 999px;
+  font-family: var(--font-display); font-weight: 700; font-size: 8.5pt;
+  letter-spacing: 0.02em;
+}
+.cg-status .dot { width: 6px; height: 6px; border-radius: 50%; }
+.cg-status.s-active  { background: var(--status-green-bg);  color: #14532d; }
+.cg-status.s-active .dot  { background: var(--status-green); }
+.cg-status.s-monitor { background: var(--status-yellow-bg); color: #713f12; }
+.cg-status.s-monitor .dot { background: var(--status-yellow); }
+.cg-status.s-blocked { background: var(--status-red-bg);    color: #7f1d1d; }
+.cg-status.s-blocked .dot { background: var(--status-red); }
+.cg-status.s-watch   { background: var(--status-blue-bg);   color: #1e3a8a; }
+.cg-status.s-watch .dot   { background: var(--status-blue); }
