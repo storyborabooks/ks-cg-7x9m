@@ -331,6 +331,55 @@ function App() {
     showToast("Downloaded HTML");
   };
 
+  const doExportPdf = async () => {
+    showToast("Generating PDF…");
+    // Build standalone HTML and render in a hidden iframe for PDF capture.
+    const sanitized = sanitizeForPreview(content);
+    const html = buildStandaloneHtml(sanitized, variant);
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;left:-9999px;top:0;width:816px;height:1056px;border:0;";
+    document.body.appendChild(iframe);
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(html);
+    iframe.contentDocument.close();
+    // Wait for fonts + scripts + Babel to compile + render.
+    await new Promise(ok => {
+      let checks = 0;
+      const poll = setInterval(() => {
+        checks++;
+        const root = iframe.contentDocument.getElementById("root");
+        const hasContent = root && root.children.length > 0 && root.querySelector(".cg-sheet");
+        if (hasContent || checks > 60) { clearInterval(poll); setTimeout(ok, 600); }
+      }, 300);
+    });
+    const target = iframe.contentDocument.querySelector(".cg-viewer") || iframe.contentDocument.getElementById("root");
+    const sheets = iframe.contentDocument.querySelectorAll(".cg-sheet");
+    if (!sheets.length) {
+      showToast("PDF failed: no pages rendered");
+      document.body.removeChild(iframe);
+      return;
+    }
+    // Use html2pdf.js
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: "px", format: [816, 1056], hotfixes: ["px_scaling"] });
+    for (let i = 0; i < sheets.length; i++) {
+      if (i > 0) pdf.addPage([816, 1056]);
+      const canvas = await html2canvas(sheets[i], {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        width: 816,
+        height: 1056,
+        windowWidth: 816,
+        windowHeight: 1056,
+      });
+      pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, 816, 1056);
+    }
+    pdf.save(`${(content.code || "guide").toLowerCase().replace(/[^a-z0-9-]+/g, "-")}.pdf`);
+    document.body.removeChild(iframe);
+    showToast("Downloaded PDF");
+  };
+
   const doReset = () => {
     if (!confirm("Clear this draft and start over? This can't be undone.")) return;
     clearDraft();
@@ -365,7 +414,8 @@ function App() {
           <button className="btn btn-ghost" onClick={doReset}>New draft</button>
           <button className="btn" onClick={doImportJson}>Import JSON</button>
           <button className="btn" onClick={doExportJson}>Export JSON</button>
-          <button className="btn btn-primary" onClick={doExportHtml}>Export HTML</button>
+          <button className="btn btn-primary" onClick={doExportPdf}>Export PDF</button>
+          <button className="btn" onClick={doExportHtml}>Export HTML</button>
         </div>
       </header>
 
