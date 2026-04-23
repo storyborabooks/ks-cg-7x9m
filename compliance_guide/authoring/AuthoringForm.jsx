@@ -529,7 +529,21 @@ function AuthoringForm({
   moveItem,
   onReorderSections,
 }) {
-  const order = content.sectionOrder || DEFAULT_SECTION_ORDER;
+  // Merge: if a saved draft's sectionOrder is missing newly-added section IDs,
+  // append them before citations so returning users see the new modules.
+  const rawOrder = content.sectionOrder || DEFAULT_SECTION_ORDER;
+  const allIds = Object.keys(SECTION_DEFS);
+  const missing = allIds.filter(id => !rawOrder.includes(id));
+  let order = rawOrder;
+  if (missing.length > 0) {
+    const citIdx = rawOrder.indexOf("citations");
+    order = [...rawOrder];
+    if (citIdx !== -1) {
+      order.splice(citIdx, 0, ...missing);
+    } else {
+      order.push(...missing);
+    }
+  }
   const helpers = { update, pushItem, removeItem, moveItem };
 
   // --- Drag-and-drop state ---
