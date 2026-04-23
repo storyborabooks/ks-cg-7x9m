@@ -38,9 +38,15 @@ const BLANK_CONTENT = {
     ],
   },
   otherFactors: { title: "", body: "" },
+  iconGrid: { heading: "", items: [] },
+  comparison: { heading: "", left: { label: "", icon: "check-circle", items: [] }, right: { label: "", icon: "x-circle", items: [] } },
+  processFlow: { heading: "", items: [] },
+  calloutCard: { icon: "alert-triangle", heading: "", body: "", variant: "info" },
   citations: [""],
   sectionOrder: ["summary", "background", "legislation", "tiles",
-    "keyRequirements", "howToImplement", "otherFactors", "citations"],
+    "keyRequirements", "howToImplement", "otherFactors",
+    "iconGrid", "comparison", "processFlow", "calloutCard",
+    "citations"],
 };
 
 const STARTER_CONTENT = {
@@ -94,7 +100,9 @@ const STARTER_CONTENT = {
     "Maryland HB 603 \u2014 Age-Appropriate Design Code Act (2024)"
   ],
   sectionOrder: ["summary", "background", "legislation", "tiles",
-    "keyRequirements", "howToImplement", "otherFactors", "citations"],
+    "keyRequirements", "howToImplement", "otherFactors",
+    "iconGrid", "comparison", "processFlow", "calloutCard",
+    "citations"],
 };
 
 // ---------- localStorage helpers ----------
