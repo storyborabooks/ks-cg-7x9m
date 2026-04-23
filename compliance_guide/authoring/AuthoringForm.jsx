@@ -326,14 +326,9 @@ function AuthoringForm({
     setDragId(sectionId);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", sectionId);
-    // Add drag class after a tick so the element doesn't disappear immediately
-    requestAnimationFrame(() => {
-      e.target.closest(".section")?.classList.add("dragging");
-    });
   };
 
-  const handleDragEnd = (e) => {
-    document.querySelectorAll(".section.dragging").forEach(el => el.classList.remove("dragging"));
+  const cleanupDrag = () => {
     document.querySelectorAll(".section.drop-above, .section.drop-below").forEach(el => {
       el.classList.remove("drop-above", "drop-below");
     });
@@ -341,6 +336,8 @@ function AuthoringForm({
     setDropTarget(null);
     setDropSide(null);
   };
+
+  const handleDragEnd = () => cleanupDrag();
 
   const handleDragOver = (e, sectionId) => {
     if (!dragId || dragId === sectionId) return;
@@ -382,14 +379,7 @@ function AuthoringForm({
     if (dropSide === "below") insertIdx += 1;
     newOrder.splice(insertIdx, 0, dragId);
     onReorderSections(newOrder);
-
-    // Clean up
-    document.querySelectorAll(".section.drop-above, .section.drop-below").forEach(el => {
-      el.classList.remove("drop-above", "drop-below");
-    });
-    setDragId(null);
-    setDropTarget(null);
-    setDropSide(null);
+    cleanupDrag();
   };
 
   return (
