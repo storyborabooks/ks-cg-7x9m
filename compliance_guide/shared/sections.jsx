@@ -200,6 +200,99 @@ function SecOtherFactors({ title, body }) {
   );
 }
 
+// ---------- Icon Grid (2-col cards with icon + title + description) ----------
+
+function SecIconGrid({ heading, items }) {
+  const cols = items.length <= 4 ? 2 : 3;
+  return (
+    <section className="cg-sec cg-sec-icon-grid">
+      <div className="cg-eyebrow">{heading || "Overview"}</div>
+      <div className={`cg-ig-grid cols-${cols}`}>
+        {items.map((item, i) => (
+          <div key={i} className="cg-ig-card">
+            <div className="cg-ig-icon">
+              <CGIcon name={item.icon} size={20} />
+            </div>
+            <div className="cg-ig-text">
+              <h3 className="cg-ig-title">{item.title}</h3>
+              <p className="cg-ig-body">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ---------- Comparison Block (side-by-side columns) ----------
+
+function SecComparison({ heading, left, right }) {
+  const renderCol = (col, side) => (
+    <div className={`cg-cmp-col cg-cmp-${side}`}>
+      <div className="cg-cmp-col-head">
+        {col.icon && (
+          <span className="cg-cmp-col-icon">
+            <CGIcon name={col.icon} size={16} />
+          </span>
+        )}
+        <span className="cg-cmp-col-label">{col.label}</span>
+      </div>
+      <ul className="cg-cmp-list">
+        {col.items.map((item, i) => <li key={i}>{item}</li>)}
+      </ul>
+    </div>
+  );
+  return (
+    <section className="cg-sec cg-sec-comparison">
+      <div className="cg-eyebrow">{heading || "Comparison"}</div>
+      <div className="cg-cmp-grid">
+        {renderCol(left, "left")}
+        <div className="cg-cmp-divider" aria-hidden="true" />
+        {renderCol(right, "right")}
+      </div>
+    </section>
+  );
+}
+
+// ---------- Process Flow (horizontal step strip) ----------
+
+function SecProcessFlow({ heading, items }) {
+  return (
+    <section className="cg-sec cg-sec-process">
+      <div className="cg-eyebrow">{heading || "Process"}</div>
+      <div className="cg-pf-strip">
+        {items.map((step, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div className="cg-pf-arrow" aria-hidden="true"><CGIcon name="arrow-right" size={16} /></div>}
+            <div className="cg-pf-step">
+              <div className="cg-pf-num">{String(i+1).padStart(2,'0')}</div>
+              <div className="cg-pf-icon"><CGIcon name={step.icon} size={18} /></div>
+              <div className="cg-pf-label">{step.label}</div>
+              {step.sub && <div className="cg-pf-sub">{step.sub}</div>}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ---------- Callout Card (emphasized box with icon) ----------
+
+function SecCalloutCard({ icon, heading, body, variant }) {
+  return (
+    <section className="cg-sec cg-sec-callout-card">
+      <div className={`cg-cc ${variant ? `cg-cc-${variant}` : ''}`}>
+        <div className="cg-cc-icon"><CGIcon name={icon || "alert-triangle"} size={22} /></div>
+        <div className="cg-cc-content">
+          <h3 className="cg-cc-heading">{heading}</h3>
+          <p className="cg-cc-body">{body}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SecCitations({ items }) {
   return (
     <section className="cg-sec cg-sec-citations">
@@ -231,9 +324,17 @@ function CGGuide({ c, fullHeaderEveryPage = false }) {
     sectionMap.howToImplement = <SecHowToImplement key="how" intro={c.howToImplement.intro} items={c.howToImplement.items} />;
   if (c.otherFactors)          sectionMap.otherFactors     = <SecOtherFactors key="other" title={c.otherFactors.title} body={c.otherFactors.body} />;
   if (c.citations?.length)     sectionMap.citations        = <SecCitations key="cite" items={c.citations} />;
+  if (c.iconGrid?.items?.length)
+    sectionMap.iconGrid = <SecIconGrid key="ig" heading={c.iconGrid.heading} items={c.iconGrid.items} />;
+  if (c.comparison?.left?.items?.length || c.comparison?.right?.items?.length)
+    sectionMap.comparison = <SecComparison key="cmp" heading={c.comparison.heading} left={c.comparison.left} right={c.comparison.right} />;
+  if (c.processFlow?.items?.length)
+    sectionMap.processFlow = <SecProcessFlow key="pf" heading={c.processFlow.heading} items={c.processFlow.items} />;
+  if (c.calloutCard?.heading)
+    sectionMap.calloutCard = <SecCalloutCard key="cc" icon={c.calloutCard.icon} heading={c.calloutCard.heading} body={c.calloutCard.body} variant={c.calloutCard.variant} />;
 
   // Build ordered list respecting sectionOrder (if provided), falling back to default.
-  const defaultOrder = ["summary","background","legislation","tiles","keyRequirements","howToImplement","otherFactors","citations"];
+  const defaultOrder = ["summary","background","legislation","tiles","keyRequirements","howToImplement","otherFactors","iconGrid","comparison","processFlow","calloutCard","citations"];
   const order = c.sectionOrder || defaultOrder;
   const sections = order.map(id => sectionMap[id]).filter(Boolean);
 
@@ -355,5 +456,6 @@ function CGGuide({ c, fullHeaderEveryPage = false }) {
 
 Object.assign(window, {
   CGGuide, CGSheet, CGHeader, CGRunningHead, CGSummary,
-  SecBackground, SecLegislation, SecKeyRequirements, SecTiles, SecHowToImplement, SecOtherFactors, SecCitations,
+  SecBackground, SecLegislation, SecKeyRequirements, SecTiles, SecHowToImplement, SecOtherFactors,
+  SecIconGrid, SecComparison, SecProcessFlow, SecCalloutCard, SecCitations,
 });
