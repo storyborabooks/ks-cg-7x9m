@@ -1,0 +1,121 @@
+/* Shared decorative bubbles for all Compliance Guide variations.
+   Imported by every variation's guide.html so the family has consistent
+   decorative language across A / B / C / D.
+
+   Matches the source PDFs' four pastel "bubbles": flat color, anti-aliased
+   edge, always bleeding off a page edge (50-70% of the circle sits outside
+   the page). Stops pinned at 99.5% -> 100% give a single-pixel feather, so
+   the shapes read as solid ellipses rather than diffuse gradients.
+
+   Placement is done per-page-role so no circle mass lands near a page seam:
+     - First page: TOP-left bleed, upper-right accent, right-edge bleed
+                   sitting in the lower-middle (not at the seam).
+     - Middle:     side-only bleeds, quiet top ~20% and bottom ~20%.
+     - Last page:  bottom-left bleed, bottom-right accent, left-edge bleed
+                   sitting in the upper-middle (not at the seam).
+
+   The role attribute is assigned by the pagination logic in
+   shared/sections.jsx:
+     - 1 page            -> "only" (uses first-page composition)
+     - first of N        -> "first"
+     - last of N         -> "last"
+     - everything else   -> "middle"
+*/
+.cg-sheet-bg {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+  background-repeat: no-repeat;
+}
+
+/* ----- Role: first page (cover) — decorations on TOP-left + RIGHT-mid ----- */
+.cg-sheet[data-page-role="first"] > .cg-sheet-bg,
+.cg-sheet[data-page-role="only"]  > .cg-sheet-bg {
+  background-image:
+    /* Big sky-blue, bleeds off top-left. */
+    radial-gradient(
+      circle 350px at -70px -50px,
+      #eaf4fb 0%,
+      #eaf4fb 99.5%,
+      rgba(234, 244, 251, 0) 100%
+    ),
+    /* Small warm-cream, inside the page, upper-right third. */
+    radial-gradient(
+      circle 110px at 68% 11%,
+      #faf2e8 0%,
+      #faf2e8 99.5%,
+      rgba(250, 242, 232, 0) 100%
+    ),
+    /* Peach, bleeds off the right edge in the lower-middle. */
+    radial-gradient(
+      circle 230px at calc(100% + 40px) 58%,
+      #fcf0e4 0%,
+      #fcf0e4 99.5%,
+      rgba(252, 240, 228, 0) 100%
+    );
+}
+
+/* ----- Role: middle page — decorations only on sides ----- */
+.cg-sheet[data-page-role="middle"] > .cg-sheet-bg {
+  background-image:
+    radial-gradient(
+      circle 220px at -60px 42%,
+      #f4f5fb 0%,
+      #f4f5fb 99.5%,
+      rgba(244, 245, 251, 0) 100%
+    ),
+    radial-gradient(
+      circle 240px at calc(100% + 30px) 62%,
+      #fcf0e4 0%,
+      #fcf0e4 99.5%,
+      rgba(252, 240, 228, 0) 100%
+    );
+}
+
+/* ----- Role: last page — decorations on BOTTOM-left + LEFT-mid ----- */
+.cg-sheet[data-page-role="last"] > .cg-sheet-bg {
+  background-image:
+    radial-gradient(
+      circle 320px at -40px calc(100% + 60px),
+      #f4f5fb 0%,
+      #f4f5fb 99.5%,
+      rgba(244, 245, 251, 0) 100%
+    ),
+    radial-gradient(
+      circle 120px at 82% 86%,
+      #faf2e8 0%,
+      #faf2e8 99.5%,
+      rgba(250, 242, 232, 0) 100%
+    ),
+    radial-gradient(
+      circle 200px at -50px 42%,
+      #eaf4fb 0%,
+      #eaf4fb 99.5%,
+      rgba(234, 244, 251, 0) 100%
+    );
+}
+
+/* Middle pages alternate composition via parity so repeated middles don't
+   look identical in long docs. */
+.cg-sheet[data-page-role="middle"][data-page-parity="even"] > .cg-sheet-bg {
+  background-image:
+    radial-gradient(
+      circle 240px at -50px 60%,
+      #fcf0e4 0%,
+      #fcf0e4 99.5%,
+      rgba(252, 240, 228, 0) 100%
+    ),
+    radial-gradient(
+      circle 220px at calc(100% + 60px) 40%,
+      #f4f5fb 0%,
+      #f4f5fb 99.5%,
+      rgba(244, 245, 251, 0) 100%
+    );
+}
+
+/* Content always above the decoration. */
+.cg-sheet > *:not(.cg-sheet-bg) { position: relative; z-index: 1; }
