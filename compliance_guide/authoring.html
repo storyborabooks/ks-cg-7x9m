@@ -170,6 +170,41 @@
     }
     .section[data-open="true"] .section-caret { transform: rotate(90deg); }
 
+    /* ---------- Drag handle & drag states ---------- */
+    .section-grip {
+      cursor: grab;
+      color: var(--ink-mute);
+      font-size: 14px;
+      letter-spacing: 1px;
+      line-height: 1;
+      padding: 4px 2px;
+      border-radius: 3px;
+      user-select: none;
+      opacity: 0.4;
+      transition: opacity 0.15s ease, color 0.15s ease;
+    }
+    .section-head:hover .section-grip {
+      opacity: 0.8;
+    }
+    .section-grip:hover {
+      opacity: 1 !important;
+      color: var(--navy-800);
+      background: var(--navy-100);
+    }
+    .section.dragging {
+      opacity: 0.35;
+      border-style: dashed;
+    }
+    .section.drop-above {
+      box-shadow: 0 -3px 0 0 var(--navy-800);
+    }
+    .section.drop-below {
+      box-shadow: 0 3px 0 0 var(--navy-800);
+    }
+    .section[draggable="true"] {
+      cursor: default;
+    }
+
     .section-body {
       padding: 10px 16px 18px;
       display: none;
