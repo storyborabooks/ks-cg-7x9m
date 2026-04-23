@@ -1,0 +1,322 @@
+/* Variation A — CONSERVATIVE.
+   Tone: closest to the existing kidSAFE PDFs. Single-column body, section eyebrows
+   in navy, restrained use of color. Reads like a polished government/compliance doc. */
+
+.cg-sheet {
+  padding: var(--page-pad-top) var(--page-pad-x) var(--page-pad-bot);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Decorative bubbles are loaded from ../shared/bubbles.css in guide.html. */
+
+/* ---------- Header (page 1 and continuation pages) ----------
+   Variation A now uses the FULL header on every page so the guide reads
+   like a coherent cover document throughout. Logo is enlarged to the
+   size used on kidsafe.com marketing materials. */
+.cg-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16pt;
+  margin-bottom: 20pt;
+  border-bottom: 2px solid var(--navy-800);
+  gap: 24pt;
+}
+.cg-head-text { flex: 1; min-width: 0; }
+.cg-head-topic {
+  font-family: var(--font-display);
+  font-size: var(--p-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-600);
+  margin-bottom: 4pt;
+}
+.cg-head-title {
+  font-family: var(--font-display);
+  font-size: var(--p-h1);
+  font-weight: 800;
+  line-height: var(--p-lh-heading);
+  color: var(--navy-800);
+  letter-spacing: -0.01em;
+  margin: 0 0 6pt;
+}
+.cg-head-meta {
+  font-family: var(--font-body);
+  font-size: var(--p-caption);
+  color: var(--fg-3);
+  display: flex;
+  gap: 6pt;
+  align-items: center;
+}
+.cg-head-sep { opacity: 0.5; }
+.cg-head-logo {
+  height: 78px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ---------- Running head (continuation pages) ---------- */
+.cg-sheet-running {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8pt;
+  margin-bottom: 14pt;
+  border-bottom: 1px solid var(--ink-200);
+}
+.cg-running-text {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  color: var(--navy-800);
+  letter-spacing: 0;
+}
+.cg-running-title { font-weight: 700; }
+.cg-running-sep { margin: 0 6pt; color: var(--ink-300); }
+.cg-running-sub {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+  color: var(--gold-600);
+}
+.cg-running-logo { height: 22px; }
+
+/* ---------- Body flow ---------- */
+.cg-sheet-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14pt;
+  min-height: 0;
+}
+
+.cg-sec-wrap { break-inside: avoid; }
+.cg-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 6pt;
+}
+.cg-eyebrow {
+  color: var(--navy-800);
+  border-bottom: 1px solid var(--ink-200);
+  padding-bottom: 4pt;
+  margin-bottom: 2pt;
+  font-size: var(--p-eyebrow);
+}
+.cg-sec-intro { font-style: normal; color: var(--fg-3); }
+
+.cg-summary {
+  font-size: var(--p-lead);
+  line-height: var(--p-lh-body);
+  color: var(--fg-1);
+  border-left: 3px solid var(--navy-800);
+  padding: 4pt 0 4pt 12pt;
+  margin: 0 0 4pt;
+}
+
+/* ---------- Footer ---------- */
+.cg-page-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10pt;
+  margin-top: 14pt;
+  border-top: 1px solid var(--ink-200);
+  font-family: var(--font-display);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+}
+
+/* ---------- Legislation cards ---------- */
+.cg-leg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8pt;
+}
+.cg-leg-card {
+  border: 1px solid var(--ink-200);
+  border-radius: 6pt;
+  padding: 10pt 12pt;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+  break-inside: avoid;
+}
+.cg-leg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6pt;
+}
+.cg-leg-juris {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--navy-800);
+}
+.cg-leg-eff {
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  color: var(--fg-3);
+}
+.cg-leg-title {
+  font-size: var(--p-h4);
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.25;
+  margin: 0;
+}
+.cg-leg-status { }
+.cg-leg-note {
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--fg-3);
+  margin: 0;
+}
+
+/* ---------- Key requirements ---------- */
+.cg-req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10pt;
+}
+.cg-req {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10pt;
+  align-items: start;
+  break-inside: avoid;
+}
+.cg-req-num {
+  font-family: var(--font-display);
+  font-size: 16pt;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--sky-500);
+  min-width: 28pt;
+  letter-spacing: -0.03em;
+}
+.cg-req-title {
+  font-size: var(--p-h3);
+  font-weight: 700;
+  color: var(--fg-1);
+  margin: 0 0 3pt;
+}
+.cg-req-copy { margin: 0; }
+
+/* ---------- Tiles (at-a-glance row) ---------- */
+.cg-tile-row {
+  display: grid;
+  gap: 6pt;
+}
+.cg-tile-row.n-3 { grid-template-columns: repeat(3, 1fr); }
+.cg-tile-row.n-4 { grid-template-columns: repeat(4, 1fr); }
+.cg-tile-row.n-5 { grid-template-columns: repeat(5, 1fr); }
+.cg-tile {
+  border: 1px solid var(--ink-200);
+  border-radius: 6pt;
+  padding: 10pt 8pt;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3pt;
+  text-align: center;
+  background: #fff;
+}
+.cg-tile-icon {
+  width: 32pt; height: 32pt;
+  border-radius: 50%;
+  background: var(--sky-100);
+  color: var(--sky-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2pt;
+}
+.cg-tile-label {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  font-weight: 700;
+  color: var(--navy-800);
+}
+.cg-tile-sub {
+  font-size: 8.5pt;
+  color: var(--fg-3);
+  line-height: 1.3;
+}
+
+/* ---------- How-to-implement checklist ---------- */
+.cg-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9pt;
+}
+.cg-check-item {
+  display: grid;
+  grid-template-columns: 18pt 1fr;
+  gap: 10pt;
+  align-items: start;
+  break-inside: avoid;
+}
+.cg-check-marker { display: flex; align-items: center; }
+.cg-check-num { display: none; } /* variation A uses the check box only */
+.cg-check-box {
+  width: 14pt; height: 14pt;
+  border-radius: 3pt;
+  background: var(--sky-500);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2pt;
+}
+.cg-check-body { font-size: var(--p-body); line-height: var(--p-lh-body); color: var(--fg-2); }
+.cg-check-head { font-family: var(--font-display); font-weight: 700; color: var(--fg-1); }
+
+/* ---------- Other Factors callout ---------- */
+.cg-callout {
+  background: var(--peach-100);
+  border-radius: 6pt;
+  padding: 12pt 14pt;
+  border-left: 3px solid var(--gold-500);
+}
+.cg-callout-eyebrow {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-700);
+  margin-bottom: 2pt;
+}
+.cg-callout-title {
+  font-size: var(--p-h3);
+  font-weight: 700;
+  color: var(--fg-1);
+  margin: 0 0 3pt;
+}
+.cg-callout-body { margin: 0; font-size: 9.5pt; }
+
+/* ---------- Citations ---------- */
+.cg-citations {
+  padding-left: 16pt;
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--fg-3);
+}
+.cg-citations li { margin-bottom: 2pt; }
