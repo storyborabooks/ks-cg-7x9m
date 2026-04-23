@@ -1,98 +1,47 @@
 // AuthoringForm — renders the collapsible section cards for each piece of
-// content. Each section has a header (section name, a "filled" badge, a
-// chevron), and when expanded, a set of fields.
+// content. Sections are rendered in the order specified by content.sectionOrder,
+// and can be reordered via drag-and-drop.
 //
-// Editing is entirely uncontrolled-on-parent: every field calls the App-level
-// `update(path, value)` prop which is the single source of truth. The form
-// never holds its own state.
+// The Header section is always first and is not draggable. The remaining
+// sections (summary, background, legislation, tiles, keyRequirements,
+// howToImplement, otherFactors, citations) can be dragged by a grip handle.
 
-function AuthoringForm({
-  content,
-  openSections,
-  toggleSection,
-  update,
-  pushItem,
-  removeItem,
-  moveItem,
-}) {
-  return (
-    <>
-      <SectionCard
-        id="header"
-        num="01"
-        title="Header"
-        desc="Title, dates, and the short eyebrow above the title"
-        open={openSections.header}
-        onToggle={() => toggleSection("header")}
-        filled={!!(content.title && content.title !== "New Compliance Guide")}
-      >
-        <TextField
-          label="Title"
-          hint="Short and specific — e.g. 'COPPA 2026 Rule Changes'"
-          value={content.title || ""}
-          onChange={v => update("title", v)}
-        />
-        <TextField
-          label="Subtitle / eyebrow"
-          hint="Appears above the title. Default: 'Compliance Guide'"
-          value={content.subtitle || ""}
-          onChange={v => update("subtitle", v)}
-        />
-        <div className="field-row">
-          <TextField
-            label="Effective date"
-            hint="e.g. 'April 22, 2026' or 'In litigation'"
-            value={content.effectiveDate || ""}
-            onChange={v => update("effectiveDate", v)}
-          />
-          <TextField
-            label="Published date"
-            hint="Date this guide was published"
-            value={content.publishedDate || ""}
-            onChange={v => update("publishedDate", v)}
-          />
-        </div>
-        <TextField
-          label="Code"
-          hint="Internal identifier, e.g. 'COPPA-2026'. Used in filename when you export."
-          value={content.code || ""}
-          onChange={v => update("code", v)}
-        />
-      </SectionCard>
+// Default section order used when content.sectionOrder is missing.
+const DEFAULT_SECTION_ORDER = [
+  "summary", "background", "legislation", "tiles",
+  "keyRequirements", "howToImplement", "otherFactors", "citations",
+];
 
-      <SectionCard
-        id="summary"
-        num="02"
-        title="Summary"
-        desc="One paragraph introducing the guide. Shown in a pull-quote style."
-        open={openSections.summary}
-        onToggle={() => toggleSection("summary")}
-        filled={!!(content.summary && content.summary.trim())}
-      >
-        <TextAreaField
-          label="Summary paragraph"
-          hint="2–4 sentences. Appears below the header."
-          value={content.summary || ""}
-          rows={4}
-          onChange={v => update("summary", v)}
-        />
-      </SectionCard>
-
-      <SectionCard
-        id="background"
-        num="03"
-        title="Background"
-        desc="Context paragraphs explaining how we got here"
-        open={openSections.background}
-        onToggle={() => toggleSection("background")}
-        filled={!!(content.background && content.background.some(p => p.trim()))}
-      >
-        {(content.background || []).map((para, i) => (
+// ---------- Section registry ----------
+// Each entry defines how a section card renders. This replaces the old
+// hardcoded <SectionCard> blocks.
+const SECTION_DEFS = {
+  summary: {
+    title: "Summary",
+    desc: "One paragraph introducing the guide. Shown in a pull-quote style.",
+    filled: c => !!(c.summary && c.summary.trim()),
+    render: (c, { update }) => (
+      <TextAreaField
+        label="Summary paragraph"
+        hint="2–4 sentences. Appears below the header."
+        value={c.summary || ""}
+        rows={4}
+        onChange={v => update("summary", v)}
+      />
+    ),
+  },
+  background: {
+    title: "Background",
+    desc: "Context paragraphs explaining how we got here",
+    filled: c => !!(c.background && c.background.some(p => p.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.background || []).map((para, i) => (
           <ItemRow
             key={i}
             num={`Paragraph ${i+1}`}
             onUp={i > 0 ? () => moveItem("background", i, -1) : null}
-            onDown={i < (content.background.length - 1) ? () => moveItem("background", i, 1) : null}
+            onDown={i < (c.background.length - 1) ? () => moveItem("background", i, 1) : null}
             onDelete={() => removeItem("background", i)}
           >
             <TextAreaField
@@ -106,23 +55,21 @@ function AuthoringForm({
         <button className="add-item" onClick={() => pushItem("background", "")}>
           + Add paragraph
         </button>
-      </SectionCard>
-
-      <SectionCard
-        id="legislation"
-        num="04"
-        title="Legislation Overview"
-        desc="Cards summarizing the laws / rules covered"
-        open={openSections.legislation}
-        onToggle={() => toggleSection("legislation")}
-        filled={!!(content.legislation && content.legislation.some(l => l.title?.trim()))}
-      >
-        {(content.legislation || []).map((l, i) => (
+      </>
+    ),
+  },
+  legislation: {
+    title: "Legislation Overview",
+    desc: "Cards summarizing the laws / rules covered",
+    filled: c => !!(c.legislation && c.legislation.some(l => l.title?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.legislation || []).map((l, i) => (
           <ItemRow
             key={i}
             num={`Card ${i+1}`}
             onUp={i > 0 ? () => moveItem("legislation", i, -1) : null}
-            onDown={i < (content.legislation.length - 1) ? () => moveItem("legislation", i, 1) : null}
+            onDown={i < (c.legislation.length - 1) ? () => moveItem("legislation", i, 1) : null}
             onDelete={() => removeItem("legislation", i)}
           >
             <div className="field-row">
@@ -177,23 +124,21 @@ function AuthoringForm({
         >
           + Add legislation card
         </button>
-      </SectionCard>
-
-      <SectionCard
-        id="tiles"
-        num="05"
-        title="At a Glance"
-        desc="3–5 small tiles with an icon + short label"
-        open={openSections.tiles}
-        onToggle={() => toggleSection("tiles")}
-        filled={!!(content.tiles && content.tiles.some(t => t.label?.trim()))}
-      >
-        {(content.tiles || []).map((t, i) => (
+      </>
+    ),
+  },
+  tiles: {
+    title: "At a Glance",
+    desc: "3–5 small tiles with an icon + short label",
+    filled: c => !!(c.tiles && c.tiles.some(t => t.label?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.tiles || []).map((t, i) => (
           <ItemRow
             key={i}
             num={`Tile ${i+1}`}
             onUp={i > 0 ? () => moveItem("tiles", i, -1) : null}
-            onDown={i < (content.tiles.length - 1) ? () => moveItem("tiles", i, 1) : null}
+            onDown={i < (c.tiles.length - 1) ? () => moveItem("tiles", i, 1) : null}
             onDelete={() => removeItem("tiles", i)}
           >
             <div className="field-row">
@@ -223,23 +168,21 @@ function AuthoringForm({
         >
           + Add tile
         </button>
-      </SectionCard>
-
-      <SectionCard
-        id="keyRequirements"
-        num="06"
-        title="Key Requirements"
-        desc="Numbered list of the substantive rules to comply with"
-        open={openSections.keyRequirements}
-        onToggle={() => toggleSection("keyRequirements")}
-        filled={!!(content.keyRequirements && content.keyRequirements.some(r => r.title?.trim()))}
-      >
-        {(content.keyRequirements || []).map((r, i) => (
+      </>
+    ),
+  },
+  keyRequirements: {
+    title: "Key Requirements",
+    desc: "Numbered list of the substantive rules to comply with",
+    filled: c => !!(c.keyRequirements && c.keyRequirements.some(r => r.title?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.keyRequirements || []).map((r, i) => (
           <ItemRow
             key={i}
             num={`Requirement ${i+1}`}
             onUp={i > 0 ? () => moveItem("keyRequirements", i, -1) : null}
-            onDown={i < (content.keyRequirements.length - 1) ? () => moveItem("keyRequirements", i, 1) : null}
+            onDown={i < (c.keyRequirements.length - 1) ? () => moveItem("keyRequirements", i, 1) : null}
             onDelete={() => removeItem("keyRequirements", i)}
           >
             <TextField
@@ -262,30 +205,28 @@ function AuthoringForm({
         >
           + Add requirement
         </button>
-      </SectionCard>
-
-      <SectionCard
-        id="howToImplement"
-        num="07"
-        title="How to Implement"
-        desc="Action checklist — what to actually do about it"
-        open={openSections.howToImplement}
-        onToggle={() => toggleSection("howToImplement")}
-        filled={!!(content.howToImplement?.items?.some(it => it.head?.trim()))}
-      >
+      </>
+    ),
+  },
+  howToImplement: {
+    title: "How to Implement",
+    desc: "Action checklist — what to actually do about it",
+    filled: c => !!(c.howToImplement?.items?.some(it => it.head?.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
         <TextAreaField
           label="Intro"
           hint="1 sentence framing the checklist. Shown above the items."
-          value={content.howToImplement?.intro || ""}
+          value={c.howToImplement?.intro || ""}
           rows={2}
           onChange={v => update(["howToImplement", "intro"], v)}
         />
-        {(content.howToImplement?.items || []).map((it, i) => (
+        {(c.howToImplement?.items || []).map((it, i) => (
           <ItemRow
             key={i}
             num={`Step ${i+1}`}
             onUp={i > 0 ? () => moveItem(["howToImplement", "items"], i, -1) : null}
-            onDown={i < (content.howToImplement.items.length - 1) ? () => moveItem(["howToImplement", "items"], i, 1) : null}
+            onDown={i < (c.howToImplement.items.length - 1) ? () => moveItem(["howToImplement", "items"], i, 1) : null}
             onDelete={() => removeItem(["howToImplement", "items"], i)}
           >
             <TextField
@@ -309,50 +250,46 @@ function AuthoringForm({
         >
           + Add step
         </button>
-      </SectionCard>
-
-      <SectionCard
-        id="otherFactors"
-        num="08"
-        title="Other Factors"
-        desc="Callout: relationship to other laws, caveats, edge cases"
-        open={openSections.otherFactors}
-        onToggle={() => toggleSection("otherFactors")}
-        filled={!!(content.otherFactors?.title?.trim() || content.otherFactors?.body?.trim())}
-      >
+      </>
+    ),
+  },
+  otherFactors: {
+    title: "Other Factors",
+    desc: "Callout: relationship to other laws, caveats, edge cases",
+    filled: c => !!(c.otherFactors?.title?.trim() || c.otherFactors?.body?.trim()),
+    render: (c, { update }) => (
+      <>
         <TextField
           label="Callout title"
-          value={content.otherFactors?.title || ""}
+          value={c.otherFactors?.title || ""}
           onChange={v => update(["otherFactors", "title"], v)}
         />
         <TextAreaField
           label="Callout body"
-          value={content.otherFactors?.body || ""}
+          value={c.otherFactors?.body || ""}
           rows={4}
           onChange={v => update(["otherFactors", "body"], v)}
         />
-      </SectionCard>
-
-      <SectionCard
-        id="citations"
-        num="09"
-        title="Citations"
-        desc="Legal citations listed at the end of the guide"
-        open={openSections.citations}
-        onToggle={() => toggleSection("citations")}
-        filled={!!(content.citations && content.citations.some(c => c.trim()))}
-      >
-        {(content.citations || []).map((c, i) => (
+      </>
+    ),
+  },
+  citations: {
+    title: "Citations",
+    desc: "Legal citations listed at the end of the guide",
+    filled: c => !!(c.citations && c.citations.some(s => s.trim())),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.citations || []).map((ci, i) => (
           <ItemRow
             key={i}
             num={`Citation ${i+1}`}
             onUp={i > 0 ? () => moveItem("citations", i, -1) : null}
-            onDown={i < (content.citations.length - 1) ? () => moveItem("citations", i, 1) : null}
+            onDown={i < (c.citations.length - 1) ? () => moveItem("citations", i, 1) : null}
             onDelete={() => removeItem("citations", i)}
           >
             <TextField
               hideLabel
-              value={c}
+              value={ci}
               onChange={v => update(["citations", i], v)}
             />
           </ItemRow>
@@ -360,18 +297,205 @@ function AuthoringForm({
         <button className="add-item" onClick={() => pushItem("citations", "")}>
           + Add citation
         </button>
+      </>
+    ),
+  },
+};
+
+// ---------- Main form component ----------
+
+function AuthoringForm({
+  content,
+  openSections,
+  toggleSection,
+  update,
+  pushItem,
+  removeItem,
+  moveItem,
+  onReorderSections,
+}) {
+  const order = content.sectionOrder || DEFAULT_SECTION_ORDER;
+  const helpers = { update, pushItem, removeItem, moveItem };
+
+  // --- Drag-and-drop state ---
+  const [dragId, setDragId] = React.useState(null);      // section being dragged
+  const [dropTarget, setDropTarget] = React.useState(null); // section being hovered over
+  const [dropSide, setDropSide] = React.useState(null);  // "above" or "below"
+
+  const handleDragStart = (e, sectionId) => {
+    setDragId(sectionId);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", sectionId);
+    // Add drag class after a tick so the element doesn't disappear immediately
+    requestAnimationFrame(() => {
+      e.target.closest(".section")?.classList.add("dragging");
+    });
+  };
+
+  const handleDragEnd = (e) => {
+    document.querySelectorAll(".section.dragging").forEach(el => el.classList.remove("dragging"));
+    document.querySelectorAll(".section.drop-above, .section.drop-below").forEach(el => {
+      el.classList.remove("drop-above", "drop-below");
+    });
+    setDragId(null);
+    setDropTarget(null);
+    setDropSide(null);
+  };
+
+  const handleDragOver = (e, sectionId) => {
+    if (!dragId || dragId === sectionId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    // Determine whether we're in the top or bottom half of the target
+    const rect = e.currentTarget.getBoundingClientRect();
+    const midY = rect.top + rect.height / 2;
+    const side = e.clientY < midY ? "above" : "below";
+    if (dropTarget !== sectionId || dropSide !== side) {
+      // Clean previous indicators
+      document.querySelectorAll(".section.drop-above, .section.drop-below").forEach(el => {
+        el.classList.remove("drop-above", "drop-below");
+      });
+      e.currentTarget.classList.add(side === "above" ? "drop-above" : "drop-below");
+      setDropTarget(sectionId);
+      setDropSide(side);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    // Only clear if we're leaving the section entirely (not entering a child)
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      e.currentTarget.classList.remove("drop-above", "drop-below");
+      setDropTarget(null);
+      setDropSide(null);
+    }
+  };
+
+  const handleDrop = (e, targetId) => {
+    e.preventDefault();
+    if (!dragId || dragId === targetId) return;
+    const fromIdx = order.indexOf(dragId);
+    const toIdx = order.indexOf(targetId);
+    if (fromIdx === -1 || toIdx === -1) return;
+
+    const newOrder = order.filter(id => id !== dragId);
+    let insertIdx = newOrder.indexOf(targetId);
+    if (dropSide === "below") insertIdx += 1;
+    newOrder.splice(insertIdx, 0, dragId);
+    onReorderSections(newOrder);
+
+    // Clean up
+    document.querySelectorAll(".section.drop-above, .section.drop-below").forEach(el => {
+      el.classList.remove("drop-above", "drop-below");
+    });
+    setDragId(null);
+    setDropTarget(null);
+    setDropSide(null);
+  };
+
+  return (
+    <>
+      {/* Header is always first and not draggable */}
+      <SectionCard
+        id="header"
+        num="01"
+        title="Header"
+        desc="Title, dates, and the short eyebrow above the title"
+        open={openSections.header}
+        onToggle={() => toggleSection("header")}
+        filled={!!(content.title && content.title !== "New Compliance Guide")}
+      >
+        <TextField
+          label="Title"
+          hint="Short and specific — e.g. 'COPPA 2026 Rule Changes'"
+          value={content.title || ""}
+          onChange={v => update("title", v)}
+        />
+        <TextField
+          label="Subtitle / eyebrow"
+          hint="Appears above the title. Default: 'Compliance Guide'"
+          value={content.subtitle || ""}
+          onChange={v => update("subtitle", v)}
+        />
+        <div className="field-row">
+          <TextField
+            label="Effective date"
+            hint="e.g. 'April 22, 2026' or 'In litigation'"
+            value={content.effectiveDate || ""}
+            onChange={v => update("effectiveDate", v)}
+          />
+          <TextField
+            label="Published date"
+            hint="Date this guide was published"
+            value={content.publishedDate || ""}
+            onChange={v => update("publishedDate", v)}
+          />
+        </div>
+        <TextField
+          label="Code"
+          hint="Internal identifier, e.g. 'COPPA-2026'. Used in filename when you export."
+          value={content.code || ""}
+          onChange={v => update("code", v)}
+        />
       </SectionCard>
+
+      {/* Reorderable sections rendered from sectionOrder */}
+      {order.map((sectionId, idx) => {
+        const def = SECTION_DEFS[sectionId];
+        if (!def) return null;
+        const num = String(idx + 2).padStart(2, "0"); // header is 01
+        return (
+          <SectionCard
+            key={sectionId}
+            id={sectionId}
+            num={num}
+            title={def.title}
+            desc={def.desc}
+            open={openSections[sectionId]}
+            onToggle={() => toggleSection(sectionId)}
+            filled={def.filled(content)}
+            draggable
+            onDragStart={e => handleDragStart(e, sectionId)}
+            onDragEnd={handleDragEnd}
+            onDragOver={e => handleDragOver(e, sectionId)}
+            onDragLeave={handleDragLeave}
+            onDrop={e => handleDrop(e, sectionId)}
+            isDragging={dragId === sectionId}
+          >
+            {def.render(content, helpers)}
+          </SectionCard>
+        );
+      })}
     </>
   );
 }
 
 // ---------- Primitives ----------
 
-function SectionCard({ id, num, title, desc, open, onToggle, filled, children }) {
+function SectionCard({
+  id, num, title, desc, open, onToggle, filled, children,
+  draggable, onDragStart, onDragEnd, onDragOver, onDragLeave, onDrop, isDragging,
+}) {
   return (
-    <div className="section" data-open={open ? "true" : "false"}>
+    <div
+      className={`section${isDragging ? " dragging" : ""}`}
+      data-open={open ? "true" : "false"}
+      draggable={draggable ? "true" : undefined}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
       <div className="section-head" onClick={onToggle}>
         <div className="section-head-left">
+          {draggable && (
+            <span
+              className="section-grip"
+              title="Drag to reorder"
+              onClick={e => e.stopPropagation()}
+              onMouseDown={e => e.stopPropagation()}
+            >⠿</span>
+          )}
           <span className="section-num">{num}</span>
           <div>
             <div className="section-title">{title}</div>
@@ -532,4 +656,4 @@ function IconField({ label, value, onChange }) {
 }
 
 // Expose for App.jsx
-Object.assign(window, { AuthoringForm });
+Object.assign(window, { AuthoringForm, DEFAULT_SECTION_ORDER });
