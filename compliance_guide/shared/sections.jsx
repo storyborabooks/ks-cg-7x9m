@@ -10,6 +10,17 @@
 
 const { useRef, useEffect, useLayoutEffect, useState } = React;
 
+// Compute the logo URL once. Works from any loading context (preview-shell,
+// authoring form, standalone HTML export via document.write iframe).
+// The parent page or buildStandaloneHtml can pre-set window.CG_LOGO_URL;
+// otherwise derive from the current page URL.
+const CG_LOGO_URL = window.CG_LOGO_URL || (() => {
+  const href = window.location.href;
+  const idx = href.indexOf("compliance_guide/");
+  if (idx !== -1) return href.slice(0, idx) + "assets/logo_kidsafe.png";
+  return "../../assets/logo_kidsafe.png";  // fallback for local dev
+})();
+
 // ---------- primitives ----------
 
 function CGSheet({ pageNum, totalPages, children }) {
@@ -51,7 +62,7 @@ function CGHeader({ c }) {
           </div>
         )}
       </div>
-      <img className="cg-head-logo" src="../../assets/logo_kidsafe.png" alt="kidSAFE Seal Program" />
+      <img className="cg-head-logo" src={CG_LOGO_URL} alt="kidSAFE Seal Program" />
     </header>
   );
 }
@@ -65,7 +76,7 @@ function CGRunningHead({ c, pageNum }) {
         <span className="cg-running-sep">·</span>
         <span className="cg-running-sub">{c.subtitle || "Compliance Guide"}</span>
       </div>
-      <img className="cg-running-logo" src="../../assets/logo_kidsafe.png" alt="kidSAFE" />
+      <img className="cg-running-logo" src={CG_LOGO_URL} alt="kidSAFE" />
     </header>
   );
 }
