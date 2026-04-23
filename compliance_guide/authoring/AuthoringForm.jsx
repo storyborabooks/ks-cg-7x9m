@@ -11,7 +11,7 @@ const DEFAULT_SECTION_ORDER = [
   "summary", "background", "legislation", "tiles",
   "keyRequirements", "howToImplement", "otherFactors",
   "iconGrid", "comparison", "processFlow", "calloutCard",
-  "citations",
+  "examples", "citations",
 ];
 
 // ---------- Section registry ----------
@@ -488,6 +488,69 @@ const SECTION_DEFS = {
       </>
     ),
   },
+  examples: {
+    title: "Examples",
+    desc: "Upload images with labels and annotations (screenshots, UI mockups, consent flows)",
+    filled: c => !!(c.examples && c.examples.some(e => e.image)),
+    render: (c, { update, pushItem, removeItem, moveItem }) => (
+      <>
+        {(c.examples || []).map((ex, i) => (
+          <ItemRow
+            key={i}
+            num={`Example ${i+1}`}
+            onUp={i > 0 ? () => moveItem("examples", i, -1) : null}
+            onDown={i < (c.examples.length - 1) ? () => moveItem("examples", i, 1) : null}
+            onDelete={() => removeItem("examples", i)}
+          >
+            <TextField
+              label="Label"
+              hint="Eyebrow text, e.g. 'Example Consent Email'"
+              value={ex.label || ""}
+              onChange={v => update(["examples", i, "label"], v)}
+            />
+            <ImageUploadField
+              label="Image"
+              value={ex.image || ""}
+              onChange={v => update(["examples", i, "image"], v)}
+            />
+            <TextAreaField
+              label="Caption"
+              hint="Optional description below the image"
+              value={ex.caption || ""}
+              rows={2}
+              onChange={v => update(["examples", i, "caption"], v)}
+            />
+            <div className="field-row">
+              <TextField
+                label="Badge text"
+                hint="e.g. 'Compliant', 'Noncompliant'"
+                value={ex.badge || ""}
+                onChange={v => update(["examples", i, "badge"], v)}
+              />
+              <SelectField
+                label="Badge style"
+                value={ex.badgeVariant || "none"}
+                options={[
+                  { value: "none", label: "None" },
+                  { value: "success", label: "Compliant (green)" },
+                  { value: "danger", label: "Noncompliant (red)" },
+                  { value: "info", label: "Info (blue)" },
+                  { value: "warning", label: "Warning (amber)" },
+                ]}
+                onChange={v => update(["examples", i, "badgeVariant"], v)}
+              />
+            </div>
+          </ItemRow>
+        ))}
+        <button
+          className="add-item"
+          onClick={() => pushItem("examples", { label: "", image: "", caption: "", badge: "", badgeVariant: "none" })}
+        >
+          + Add example
+        </button>
+      </>
+    ),
+  },
   citations: {
     title: "Citations",
     desc: "Legal citations listed at the end of the guide",
@@ -884,6 +947,72 @@ function IconField({ label, value, onChange }) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+
+// ---------- Image upload field ----------
+// Reads file as base64 data URI for embedding in JSON.
+function ImageUploadField({ label, value, onChange }) {
+  const inputRef = React.useRef(null);
+  const handleFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return;
+    // Cap at ~4MB to keep JSON manageable
+    if (file.size > 4 * 1024 * 1024) {
+      alert("Image must be under 4 MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result);
+    reader.readAsDataURL(file);
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove("drag-over");
+    const file = e.dataTransfer.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    if (file.size > 4 * 1024 * 1024) {
+      alert("Image must be under 4 MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result);
+    reader.readAsDataURL(file);
+  };
+  return (
+    <div className="field">
+      <div className="field-label"><span>{label}</span></div>
+      {value ? (
+        <div className="image-upload-preview">
+          <img src={value} alt="Uploaded example" />
+          <div className="image-upload-actions">
+            <button className="btn btn-sm" onClick={() => inputRef.current?.click()}>Replace</button>
+            <button className="btn btn-sm btn-ghost danger" onClick={() => onChange("")}>Remove</button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="image-upload-drop"
+          onClick={() => inputRef.current?.click()}
+          onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add("drag-over"); }}
+          onDragLeave={e => e.currentTarget.classList.remove("drag-over")}
+          onDrop={handleDrop}
+        >
+          <span className="image-upload-icon">📷</span>
+          <span>Click or drag an image here</span>
+          <span className="image-upload-hint">PNG, JPG, or SVG · max 4 MB</span>
+        </div>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={handleFile}
+      />
     </div>
   );
 }

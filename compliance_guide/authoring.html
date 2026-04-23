@@ -523,6 +523,56 @@
       opacity: 1;
       transform: translateX(-50%) translateY(-4px);
     }
+
+    /* ---------- Image upload field ---------- */
+    .image-upload-drop {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 24px 16px;
+      border: 2px dashed var(--rule-2);
+      border-radius: 10px;
+      background: var(--paper);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      font-size: 13px;
+      color: var(--ink-mute);
+    }
+    .image-upload-drop:hover,
+    .image-upload-drop.drag-over {
+      border-color: var(--navy-800);
+      background: var(--navy-100);
+    }
+    .image-upload-icon { font-size: 24px; }
+    .image-upload-hint { font-size: 11px; opacity: 0.6; }
+    .image-upload-preview {
+      position: relative;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8f8f8;
+    }
+    .image-upload-preview img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 200px;
+      object-fit: contain;
+    }
+    .image-upload-actions {
+      display: flex;
+      gap: 6px;
+      padding: 6px 8px;
+      background: rgba(255,255,255,0.9);
+      border-top: 1px solid var(--rule);
+    }
+    .btn-sm {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>

@@ -42,11 +42,12 @@ const BLANK_CONTENT = {
   comparison: { heading: "", left: { label: "", icon: "check-circle", items: [] }, right: { label: "", icon: "x-circle", items: [] } },
   processFlow: { heading: "", items: [] },
   calloutCard: { icon: "alert-triangle", heading: "", body: "", variant: "info" },
+  examples: [],
   citations: [""],
   sectionOrder: ["summary", "background", "legislation", "tiles",
     "keyRequirements", "howToImplement", "otherFactors",
     "iconGrid", "comparison", "processFlow", "calloutCard",
-    "citations"],
+    "examples", "citations"],
 };
 
 const STARTER_CONTENT = {
@@ -102,7 +103,7 @@ const STARTER_CONTENT = {
   sectionOrder: ["summary", "background", "legislation", "tiles",
     "keyRequirements", "howToImplement", "otherFactors",
     "iconGrid", "comparison", "processFlow", "calloutCard",
-    "citations"],
+    "examples", "citations"],
 };
 
 // ---------- localStorage helpers ----------
@@ -162,6 +163,10 @@ function sanitizeForPreview(c) {
   }
   if (out.otherFactors && !out.otherFactors.title?.trim() && !out.otherFactors.body?.trim()) {
     delete out.otherFactors;
+  }
+  if (out.examples) {
+    const ex = out.examples.filter(e => e.image);
+    if (ex.length) out.examples = ex; else delete out.examples;
   }
   if (out.citations) {
     const cc = out.citations.filter(s => s.trim());

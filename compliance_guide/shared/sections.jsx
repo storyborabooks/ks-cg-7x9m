@@ -293,6 +293,30 @@ function SecCalloutCard({ icon, heading, body, variant }) {
   );
 }
 
+// ---------- Examples (uploaded images with labels + badges) ----------
+
+function SecExamples({ items }) {
+  return (
+    <section className="cg-sec cg-sec-examples">
+      <div className="cg-eyebrow">Examples</div>
+      <div className="cg-ex-list">
+        {items.map((ex, i) => (
+          <figure key={i} className="cg-ex-item">
+            {ex.label && <div className="cg-ex-label">{ex.label}</div>}
+            <div className="cg-ex-img-wrap">
+              {ex.badge && ex.badgeVariant && ex.badgeVariant !== "none" && (
+                <span className={`cg-ex-badge cg-ex-badge-${ex.badgeVariant}`}>{ex.badge}</span>
+              )}
+              <img className="cg-ex-img" src={ex.image} alt={ex.label || "Example"} />
+            </div>
+            {ex.caption && <figcaption className="cg-ex-caption">{ex.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function SecCitations({ items }) {
   return (
     <section className="cg-sec cg-sec-citations">
@@ -330,11 +354,13 @@ function CGGuide({ c, fullHeaderEveryPage = false }) {
     sectionMap.comparison = <SecComparison key="cmp" heading={c.comparison.heading} left={c.comparison.left} right={c.comparison.right} />;
   if (c.processFlow?.items?.length)
     sectionMap.processFlow = <SecProcessFlow key="pf" heading={c.processFlow.heading} items={c.processFlow.items} />;
+  if (c.examples?.length)
+    sectionMap.examples = <SecExamples key="ex" items={c.examples} />;
   if (c.calloutCard?.heading)
     sectionMap.calloutCard = <SecCalloutCard key="cc" icon={c.calloutCard.icon} heading={c.calloutCard.heading} body={c.calloutCard.body} variant={c.calloutCard.variant} />;
 
   // Build ordered list respecting sectionOrder (if provided), falling back to default.
-  const defaultOrder = ["summary","background","legislation","tiles","keyRequirements","howToImplement","otherFactors","iconGrid","comparison","processFlow","calloutCard","citations"];
+  const defaultOrder = ["summary","background","legislation","tiles","keyRequirements","howToImplement","otherFactors","iconGrid","comparison","processFlow","calloutCard","examples","citations"];
   const order = c.sectionOrder || defaultOrder;
   const sections = order.map(id => sectionMap[id]).filter(Boolean);
 
@@ -457,5 +483,5 @@ function CGGuide({ c, fullHeaderEveryPage = false }) {
 Object.assign(window, {
   CGGuide, CGSheet, CGHeader, CGRunningHead, CGSummary,
   SecBackground, SecLegislation, SecKeyRequirements, SecTiles, SecHowToImplement, SecOtherFactors,
-  SecIconGrid, SecComparison, SecProcessFlow, SecCalloutCard, SecCitations,
+  SecIconGrid, SecComparison, SecProcessFlow, SecCalloutCard, SecExamples, SecCitations,
 });
