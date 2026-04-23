@@ -11,11 +11,10 @@
 
 const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
-// ---------- Starter content ----------
-// A lightweight starter draft so new authors have something to see right away.
-// Intentionally skeletal — demonstrates every section type with 1-2 items
-// each, so you can delete what you don't need.
-const STARTER_CONTENT = {
+// ---------- Default content ----------
+// Pre-populated with the COPPA 2026 Rule Changes guide so first-time visitors
+// see a fully worked example. "New draft" resets to BLANK_CONTENT.
+const BLANK_CONTENT = {
   title: "New Compliance Guide",
   subtitle: "Compliance Guide",
   effectiveDate: "",
@@ -40,6 +39,58 @@ const STARTER_CONTENT = {
   },
   otherFactors: { title: "", body: "" },
   citations: [""],
+};
+
+const STARTER_CONTENT = {
+  title: "COPPA 2026 Rule Changes",
+  subtitle: "Compliance Guide",
+  effectiveDate: "April 22, 2026",
+  publishedDate: "January 2026",
+  code: "COPPA-2026",
+  summary: "The FTC\u2019s amended Children\u2019s Online Privacy Protection Rule takes effect April 22, 2026. Operators of child-directed services, and services with actual knowledge they collect personal information from children under 13, face expanded consent, data-minimization, and retention obligations. This guide summarizes what changes, what\u2019s new, and what to do.",
+  background: [
+    "In January 2025, the FTC finalized amendments to the COPPA Rule \u2014 the first substantive update since 2013. The amendments close loopholes around targeted advertising, tighten the definition of personal information, add new consent requirements for third-party data sharing, and codify data-retention and security obligations.",
+    "The compliance deadline is April 22, 2026. Existing operators must update privacy policies, consent flows, data-sharing agreements, and internal retention schedules before that date. New entrants must build to the amended rule from day one."
+  ],
+  legislation: [
+    { juris: "FEDERAL", title: "Amended COPPA Rule (16 C.F.R. \u00a7 312)", effective: "Apr 22, 2026", status: "active", statusLabel: "Active", note: "FTC enforcement. Civil penalties up to $53,088 per violation." },
+    { juris: "CALIFORNIA", title: "Age-Appropriate Design Code (AB 2273)", effective: "In litigation", status: "blocked", statusLabel: "Blocked", note: "Preliminarily enjoined by 9th Cir. Tracks COPPA-style duties for minors under 18." },
+    { juris: "MARYLAND", title: "Age-Appropriate Design Code (HB 603)", effective: "Oct 1, 2025", status: "active", statusLabel: "Active", note: "Design-duty + DPIA requirements for services likely accessed by minors." },
+    { juris: "FEDERAL", title: "KOSA (S.1409)", effective: "Pending", status: "watch", statusLabel: "Watch", note: "Passed Senate 2024; House action uncertain. Would add duty of care + design mandates." }
+  ],
+  keyRequirements: [
+    { title: "Expanded definition of personal information", body: "The amended rule expands \u2018personal information\u2019 to include biometric identifiers (fingerprints, voiceprints, retinal scans, gait data) and government-issued identifiers. If your product collects, infers, or stores any of these from a child under 13, verifiable parental consent (VPC) is required." },
+    { title: "Separate consent for third-party data sharing", body: "Operators must now obtain a separate, opt-in parental consent before disclosing a child\u2019s personal information to third parties for purposes other than supporting the internal operations of the service. A general consent for service use no longer covers third-party disclosure." },
+    { title: "Data retention + written retention policy", body: "Operators must retain a child\u2019s personal information only for as long as reasonably necessary to fulfill the purpose for which it was collected. A written data-retention policy must be posted publicly and must specify a deletion schedule. Indefinite retention is no longer permitted." },
+    { title: "Written information-security program", body: "Operators must establish, implement, and maintain a written information-security program containing administrative, technical, and physical safeguards appropriate to the sensitivity of the personal information and the size and complexity of the operator." }
+  ],
+  tiles: [
+    { icon: "shield-check", label: "Separate VPC", sub: "for 3rd-party sharing" },
+    { icon: "scan-face", label: "Biometrics = PI", sub: "new category" },
+    { icon: "clock", label: "Retention policy", sub: "written + public" },
+    { icon: "lock", label: "Security program", sub: "written safeguards" }
+  ],
+  howToImplement: {
+    intro: "Use this checklist to prepare for the April 22, 2026 compliance deadline. Most items require coordination between product, legal, and security teams.",
+    items: [
+      { head: "Audit your data inventory", body: "Map every field of personal information you collect from users under 13, including biometric and government-ID fields added by the 2026 amendments. Flag anything new." },
+      { head: "Split consent flows", body: "Redesign your parental-consent flow to obtain separate, opt-in consent for third-party data sharing. General service-use consent must not imply consent to sharing." },
+      { head: "Publish a retention schedule", body: "Write and publicly post a data-retention policy that specifies, for each category of child personal information, how long you retain it and when it is deleted." },
+      { head: "Update privacy policy", body: "Revise your privacy policy to reflect the expanded definition of personal information, separate-consent requirement, retention schedule, and the named third parties you disclose to." },
+      { head: "Stand up a security program", body: "Document your administrative, technical, and physical safeguards in a written information-security program. Assign an accountable owner. Review at least annually." },
+      { head: "Vendor + processor diligence", body: "Update contracts with processors and advertising partners to reflect the new disclosure restrictions. Obtain written assurances of equivalent data-handling practices." },
+      { head: "Train your team", body: "Brief product, engineering, and support teams on the amended rule. Document training completion." }
+    ]
+  },
+  otherFactors: {
+    title: "Interaction with state laws",
+    body: "COPPA sets a federal floor, not a ceiling. State laws \u2014 California AADC (when it clears litigation), Maryland AADC, Connecticut SB 3, and others \u2014 impose additional duties, especially for the 13\u201317 age group that COPPA does not cover. Build to the stricter standard in any state where you operate."
+  },
+  citations: [
+    "16 C.F.R. Part 312 (amended Jan. 2025; eff. Apr. 22, 2026)",
+    "FTC press release, \"FTC Finalizes Changes to Children\u2019s Privacy Rule\" (Jan. 16, 2025)",
+    "Maryland HB 603 \u2014 Age-Appropriate Design Code Act (2024)"
+  ]
 };
 
 // ---------- localStorage helpers ----------
@@ -258,7 +309,7 @@ function App() {
       try {
         const data = JSON.parse(text);
         // Merge onto STARTER so any missing sections default safely.
-        setContent({ ...STARTER_CONTENT, ...data });
+        setContent({ ...BLANK_CONTENT, ...data });
         showToast("Imported");
       } catch (e) {
         showToast("Import failed: not valid JSON");
@@ -283,7 +334,7 @@ function App() {
   const doReset = () => {
     if (!confirm("Clear this draft and start over? This can't be undone.")) return;
     clearDraft();
-    setContent(STARTER_CONTENT);
+    setContent(BLANK_CONTENT);
     showToast("Started a new draft");
   };
 
