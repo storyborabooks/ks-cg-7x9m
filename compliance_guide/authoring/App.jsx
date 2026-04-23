@@ -39,6 +39,8 @@ const BLANK_CONTENT = {
   },
   otherFactors: { title: "", body: "" },
   citations: [""],
+  sectionOrder: ["summary", "background", "legislation", "tiles",
+    "keyRequirements", "howToImplement", "otherFactors", "citations"],
 };
 
 const STARTER_CONTENT = {
@@ -90,7 +92,9 @@ const STARTER_CONTENT = {
     "16 C.F.R. Part 312 (amended Jan. 2025; eff. Apr. 22, 2026)",
     "FTC press release, \"FTC Finalizes Changes to Children\u2019s Privacy Rule\" (Jan. 16, 2025)",
     "Maryland HB 603 \u2014 Age-Appropriate Design Code Act (2024)"
-  ]
+  ],
+  sectionOrder: ["summary", "background", "legislation", "tiles",
+    "keyRequirements", "howToImplement", "otherFactors", "citations"],
 };
 
 // ---------- localStorage helpers ----------
@@ -285,6 +289,10 @@ function App() {
     setOpenSections(s => ({ ...s, [id]: !s[id] }));
   };
 
+  const reorderSections = useCallback((newOrder) => {
+    setContent(prev => ({ ...prev, sectionOrder: newOrder }));
+  }, []);
+
   // ---------- Actions: import JSON, export JSON, export HTML, reset ----------
   const doExportJson = () => {
     const data = JSON.stringify(sanitizeForPreview(content), null, 2);
@@ -430,6 +438,7 @@ function App() {
             pushItem={pushItem}
             removeItem={removeItem}
             moveItem={moveItem}
+            onReorderSections={reorderSections}
           />
         </div>
       </div>
@@ -474,7 +483,8 @@ function IntroCard() {
       </p>
       <p style={{marginTop: 8}}>
         <strong>Every section is optional.</strong> Skip any you don't need — they won't appear
-        in the final guide. You can rearrange items within a section using the ↑ / ↓ controls.
+        in the final guide. Drag sections by their grip handle to reorder them, and rearrange
+        items within a section using the ↑ / ↓ controls.
       </p>
     </div>
   );
