@@ -485,13 +485,49 @@ const TILE_ICONS = [
 ];
 
 function IconField({ label, value, onChange }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+
+  // Close on outside click
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
   return (
-    <label className="field">
+    <div className="field" ref={ref} style={{ position: "relative" }}>
       <div className="field-label"><span>{label}</span></div>
-      <select value={value} onChange={e => onChange(e.target.value)}>
-        {TILE_ICONS.map(i => <option key={i} value={i}>{i}</option>)}
-      </select>
-    </label>
+      <button
+        type="button"
+        className="icon-picker-trigger"
+        onClick={() => setOpen(!open)}
+      >
+        <CGIcon name={value} size={18} stroke={1.8} />
+        <span className="icon-name">{value}</span>
+      </button>
+      {open && (
+        <div className="icon-picker-popover">
+          <div className="icon-picker-grid">
+            {TILE_ICONS.map(name => (
+              <button
+                key={name}
+                type="button"
+                className={`icon-picker-option ${value === name ? "selected" : ""}`}
+                title={name}
+                onClick={() => { onChange(name); setOpen(false); }}
+              >
+                <CGIcon name={name} size={20} stroke={1.6} />
+                <span className="icon-label">{name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
