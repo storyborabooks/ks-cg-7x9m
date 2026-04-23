@@ -1,0 +1,423 @@
+/* Variation B — BALANCED.
+   Two-column body: narrow navy rail on the left carries the section eyebrow;
+   main column carries content. Navy header band, confident type hierarchy,
+   accent underlines on section titles. More modern than Variation A but
+   still a conservative compliance doc. */
+
+.cg-sheet {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cg-sheet-bg { /* decorative bubbles loaded from shared/bubbles.css */ }
+
+/* ---------- Header (page 1) ---------- */
+/* Sky-blue banner — matches the SAFE blue from the kidSAFE wordmark
+   and the banner color used across the original compliance guide PDFs. */
+.cg-sheet-head {
+  background: var(--sky-500);
+  color: #fff;
+  padding: 0.55in var(--page-pad-x) 0.45in;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24pt;
+  position: relative;
+}
+.cg-sheet-head::after {
+  /* hairline gold accent */
+  content: "";
+  position: absolute;
+  left: var(--page-pad-x);
+  right: var(--page-pad-x);
+  bottom: 0;
+  height: 3px;
+  background: var(--gold-500);
+}
+.cg-head-text { flex: 1; min-width: 0; }
+.cg-head-topic {
+  font-family: var(--font-display);
+  font-size: var(--p-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-500);
+  margin-bottom: 8pt;
+}
+.cg-head-title,
+.cg-sheet .cg-head-title {
+  font-family: var(--font-display);
+  font-size: 28pt;
+  font-weight: 800;
+  line-height: 1.05;
+  color: #fff;
+  letter-spacing: -0.015em;
+  margin: 0 0 8pt;
+  max-width: 5in;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+.cg-head-meta {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.72);
+  display: flex;
+  gap: 10pt;
+  font-weight: 600;
+}
+.cg-head-sep { color: var(--gold-500); }
+.cg-head-logo {
+  height: 108px;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 12px 22px;
+  border-radius: 12pt;
+  box-sizing: content-box;
+}
+
+/* ---------- Running head (continuation pages) ---------- */
+.cg-sheet-running {
+  background: var(--sky-500);
+  color: #fff;
+  padding: 10pt var(--page-pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.cg-sheet-running::after {
+  content: "";
+  position: absolute;
+  left: var(--page-pad-x);
+  right: var(--page-pad-x);
+  bottom: 0;
+  height: 2px;
+  background: var(--gold-500);
+}
+.cg-running-text {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+}
+.cg-running-title { font-weight: 700; }
+.cg-running-sep { color: var(--gold-500); }
+.cg-running-sub {
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+  color: rgba(255,255,255,0.7);
+}
+.cg-running-logo {
+  height: 22px;
+  background: #fff;
+  padding: 4px 8px;
+  border-radius: 4pt;
+  box-sizing: content-box;
+}
+
+/* ---------- Body flow: two-column with eyebrow rail ---------- */
+.cg-sheet-body {
+  flex: 1;
+  padding: 22pt var(--page-pad-x) var(--page-pad-bot);
+  display: flex;
+  flex-direction: column;
+  gap: 18pt;
+  min-height: 0;
+}
+
+.cg-sec-wrap { break-inside: avoid; }
+
+/* The section itself is a grid: rail (eyebrow) | content column.
+   Eyebrow occupies col 1 only and is sticky-top; the content column stacks all
+   other children vertically in col 2. */
+.cg-sec {
+  display: grid;
+  grid-template-columns: 82pt 1fr;
+  column-gap: 14pt;
+  align-items: start;
+}
+.cg-sec > .cg-eyebrow {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: start;
+  border: none;
+  padding: 2pt 0 0;
+  margin: 0;
+  color: var(--navy-800);
+  font-size: 9.5pt;
+  letter-spacing: 0.16em;
+  border-top: 2px solid var(--navy-800);
+  padding-top: 6pt;
+}
+.cg-sec > *:not(.cg-eyebrow) {
+  grid-column: 2;
+}
+/* Put some vertical breathing room between successive children in col 2. */
+.cg-sec > *:not(.cg-eyebrow) + *:not(.cg-eyebrow) {
+  margin-top: 8pt;
+}
+
+/* Section intro copy */
+.cg-sec-intro {
+  color: var(--fg-2);
+  font-size: var(--p-lead);
+  margin-bottom: 6pt;
+}
+
+/* Sections without an eyebrow (like Other Factors callout) span both columns. */
+.cg-sec-other { display: block; }
+
+/* Summary (no eyebrow, spans full width) */
+.cg-summary {
+  font-family: var(--font-display);
+  font-size: 13.5pt;
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--fg-1);
+  letter-spacing: -0.005em;
+  margin: 0 0 4pt;
+  border-left: 3px solid var(--gold-500);
+  padding: 2pt 0 2pt 14pt;
+}
+
+/* ---------- Footer ---------- */
+.cg-page-foot {
+  margin: auto var(--page-pad-x) 0;
+  padding: 10pt 0 0.35in;
+  border-top: 1px solid var(--ink-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-4);
+}
+.cg-foot-page .cg-foot-of { color: var(--ink-300); }
+
+/* ---------- Legislation cards (tighter, rule between) ---------- */
+.cg-leg-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16pt;
+  row-gap: 12pt;
+}
+.cg-leg-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+  padding: 0 0 12pt;
+  border-bottom: 1px solid var(--ink-200);
+  break-inside: avoid;
+}
+.cg-leg-card:nth-last-child(-n+2) { border-bottom: none; padding-bottom: 0; }
+.cg-leg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.cg-leg-juris {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sky-600);
+}
+.cg-leg-eff {
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  color: var(--fg-3);
+}
+.cg-leg-title {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.25;
+  margin: 0;
+}
+.cg-leg-note {
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--fg-3);
+  margin: 2pt 0 0;
+}
+
+/* ---------- Key requirements — numbered rows ---------- */
+.cg-req-list {
+  display: flex;
+  flex-direction: column;
+}
+.cg-req {
+  display: grid;
+  grid-template-columns: 34pt 1fr;
+  gap: 12pt;
+  align-items: start;
+  padding: 10pt 0;
+  border-top: 1px solid var(--ink-200);
+  break-inside: avoid;
+}
+.cg-req:first-child { border-top: none; padding-top: 2pt; }
+.cg-req-num {
+  font-family: var(--font-display);
+  font-size: 20pt;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--navy-800);
+  letter-spacing: -0.04em;
+  padding-top: 2pt;
+}
+.cg-req-title {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--fg-1);
+  margin: 0 0 3pt;
+  letter-spacing: -0.005em;
+}
+.cg-req-copy { margin: 0; }
+
+/* ---------- Tiles ---------- */
+/* At-a-Glance tiles use the same sky blue as the banner, tying them visually
+   to the page masthead — matches the tile color used in the original PDFs. */
+.cg-tile-row {
+  display: grid;
+  gap: 8pt;
+}
+.cg-tile-row.n-3 { grid-template-columns: repeat(3, 1fr); }
+.cg-tile-row.n-4 { grid-template-columns: repeat(4, 1fr); }
+.cg-tile-row.n-5 { grid-template-columns: repeat(5, 1fr); }
+.cg-tile {
+  background: var(--sky-500);
+  color: #fff;
+  border-radius: 8pt;
+  padding: 12pt 10pt;
+  display: flex;
+  flex-direction: column;
+  gap: 4pt;
+  align-items: flex-start;
+}
+.cg-tile-icon {
+  width: 30pt; height: 30pt;
+  border-radius: 8pt;
+  background: rgba(255,255,255,0.18);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2pt;
+}
+.cg-tile-label {
+  font-family: var(--font-display);
+  font-size: 10.5pt;
+  font-weight: 700;
+  color: #fff;
+}
+.cg-tile-sub {
+  font-size: 8.5pt;
+  color: rgba(255,255,255,0.88);
+  line-height: 1.3;
+}
+
+/* ---------- How-to-implement — single column (the content column is already
+   narrowed by the eyebrow rail, so a second split would be cramped). ---------- */
+.cg-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9pt;
+}
+.cg-check-item {
+  display: grid;
+  grid-template-columns: 26pt 1fr;
+  gap: 10pt;
+  align-items: start;
+  break-inside: avoid;
+}
+.cg-check-marker {
+  display: flex;
+  align-items: center;
+  gap: 4pt;
+  padding-top: 1pt;
+}
+.cg-check-num {
+  font-family: var(--font-display);
+  font-size: 9pt;
+  font-weight: 800;
+  color: var(--navy-700);
+  letter-spacing: 0.02em;
+  display: none; /* keep compact — box alone is enough */
+}
+.cg-check-box {
+  width: 16pt; height: 16pt;
+  border-radius: 50%;
+  background: var(--sky-500);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cg-check-body { font-size: 9.5pt; line-height: 1.4; color: var(--fg-2); }
+.cg-check-head { font-family: var(--font-display); font-weight: 700; color: var(--fg-1); }
+
+/* ---------- Other Factors callout ---------- */
+/* Matches the sky-blue of the banner and at-a-glance tiles exactly — same
+   sky-500 background + white text for a consistent palette across the page.
+   Gold left rule keeps it set apart as a callout. */
+.cg-callout {
+  background: var(--sky-500);
+  color: #fff;
+  border-radius: 8pt;
+  padding: 14pt 16pt;
+  position: relative;
+  border-left: 4px solid var(--gold-500);
+}
+.cg-callout-eyebrow {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+  margin-bottom: 3pt;
+}
+.cg-callout-title,
+.cg-sheet .cg-callout-title {
+  font-size: 13pt;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6pt;
+}
+.cg-callout .cg-callout-body,
+.cg-sheet .cg-callout .cg-callout-body {
+  margin: 0;
+  font-size: 10pt;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.5;
+}
+
+/* ---------- Citations ---------- */
+.cg-citations {
+  padding-left: 16pt;
+  margin: 0;
+  font-size: 9pt;
+  line-height: 1.45;
+  color: var(--fg-3);
+}
+.cg-citations li { margin-bottom: 3pt; }
+
+/* The default shared sizing uses .cg-sheet padding for margins — since we moved
+   padding onto the header/body/foot for this variation, restore min-height
+   by letting the body grow. */
+.cg-sheet { padding: 0; }
