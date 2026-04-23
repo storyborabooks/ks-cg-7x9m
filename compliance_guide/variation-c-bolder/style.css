@@ -27,12 +27,11 @@
   position: relative;
   background:
     linear-gradient(180deg, #fdf5ea 0%, #fffaf2 85%, #ffffff 100%);
-  padding: 0.45in var(--page-pad-x) 0.55in;
+  padding: 0.25in var(--page-pad-x) 0.2in;
   display: grid;
   grid-template-columns: 1fr auto;
   column-gap: 26pt;
   align-items: center;
-  min-height: 2.6in;
   overflow: hidden;
   border-bottom: 3px solid var(--gold-500);
 }
@@ -42,10 +41,10 @@
 .cg-sheet-head::before {
   content: "";
   position: absolute;
-  right: -1.4in;
-  top: -1.2in;
-  width: 4in;
-  height: 4in;
+  right: -1.6in;
+  top: -0.8in;
+  width: 3in;
+  height: 3in;
   border-radius: 50%;
   background: radial-gradient(circle at 40% 50%, #d7ecf8 0%, #d7ecf8 55%, rgba(215,236,248,0) 85%);
   z-index: 0;
@@ -60,7 +59,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold-600);
-  margin-bottom: 10pt;
+  margin-bottom: 6pt;
   display: flex;
   align-items: center;
   gap: 8pt;
@@ -74,12 +73,12 @@
 .cg-head-title,
 .cg-sheet .cg-head-title {
   font-family: var(--font-display);
-  font-size: 32pt;
+  font-size: 26pt;
   font-weight: 800;
   line-height: 1.03;
   color: var(--navy-800);
   letter-spacing: -0.02em;
-  margin: 0 0 12pt;
+  margin: 0 0 8pt;
 }
 .cg-head-meta {
   font-family: var(--font-display);
@@ -105,7 +104,7 @@
   object-position: center;
   /* Nudge up-and-right so the wordmark sits cleanly inside the peach wash
      instead of crossing its left edge. */
-  transform: translate(14pt, -18pt);
+  transform: translate(14pt, -6pt);
 }
 
 /* ---------- Running head for continuation pages ---------- */
