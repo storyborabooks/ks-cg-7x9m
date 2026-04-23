@@ -1,0 +1,492 @@
+/* Variation D — FIELD GUIDE.
+   A reference-document aesthetic: persistent left rail carries the section
+   name and a compact doc map on page 1. Legislation rendered as an index
+   table with jurisdiction tabs. Gold tick-mark section dividers. Sky-blue
+   pull-quote treatments. Peach cream background tint sits under the whole
+   sheet to tie it back to kidSAFE without shouting.
+
+   Differentiators vs A/B/C:
+     - A: plain single column, bureaucratic.
+     - B: sky banner, two-col eyebrow rail.
+     - C: seal-hero cover, rounded cards, color rotation.
+     - D: full-sheet warm tint, left rail, tabbed legislation index,
+          no big header bar — eyebrow + rule instead.
+*/
+
+.cg-sheet {
+  background: #fffaf0;        /* warm cream tint across the whole sheet */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cg-sheet p { color: var(--fg-1); font-size: 10.5pt; line-height: 1.5; }
+
+/* ---------- Page 1 header: NO big banner, just a masthead row ---------- */
+.cg-sheet-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 24pt;
+  align-items: end;
+  padding: 0.45in var(--page-pad-x) 18pt;
+  position: relative;
+  border-bottom: 4px double var(--gold-500);
+}
+.cg-head-text { min-width: 0; }
+.cg-head-topic {
+  font-family: var(--font-display);
+  font-size: 9pt;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sky-600);
+  margin-bottom: 10pt;
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+}
+.cg-head-topic::before,
+.cg-head-topic::after {
+  content: "";
+  height: 1px;
+  background: var(--sky-500);
+  opacity: 0.4;
+  flex: 0 0 auto;
+}
+.cg-head-topic::before { width: 18pt; }
+.cg-head-topic::after { display: none; }
+.cg-head-title,
+.cg-sheet .cg-head-title {
+  font-family: var(--font-display);
+  font-size: 30pt;
+  font-weight: 800;
+  line-height: 1.02;
+  color: var(--navy-800);
+  letter-spacing: -0.02em;
+  margin: 0 0 10pt;
+  max-width: 5.5in;
+}
+.cg-head-meta {
+  font-family: var(--font-mono);
+  font-size: 9pt;
+  color: var(--fg-3);
+  display: flex;
+  gap: 10pt;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.cg-head-sep { color: var(--gold-500); }
+.cg-head-logo {
+  height: 56px;
+  width: auto;
+  align-self: end;
+  margin-bottom: 3pt;
+}
+
+/* ---------- Running head (continuation pages) ---------- */
+.cg-sheet-running {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12pt var(--page-pad-x) 10pt;
+  border-bottom: 2px solid var(--gold-500);
+  position: relative;
+}
+.cg-sheet-running::before {
+  /* tiny tick mark on the left, field-guide style */
+  content: "";
+  position: absolute;
+  left: var(--page-pad-x);
+  bottom: -5px;
+  width: 14pt;
+  height: 8px;
+  background: var(--gold-500);
+}
+.cg-running-text {
+  font-family: var(--font-display);
+  font-size: 9.5pt;
+  color: var(--navy-800);
+  display: flex;
+  align-items: center;
+  gap: 8pt;
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+.cg-running-title { font-weight: 800; }
+.cg-running-sep { color: var(--gold-500); }
+.cg-running-sub {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+  color: var(--fg-3);
+}
+.cg-running-logo { height: 24px; }
+
+/* ---------- Body: left rail + content column ---------- */
+.cg-sheet-body {
+  flex: 1;
+  padding: 22pt var(--page-pad-x) var(--page-pad-bot);
+  display: flex;
+  flex-direction: column;
+  gap: 20pt;
+  min-height: 0;
+}
+.cg-sec-wrap { break-inside: avoid; }
+
+/* Sections — left rail with eyebrow, right content column */
+.cg-sec {
+  display: grid;
+  grid-template-columns: 1.1in 1fr;
+  column-gap: 18pt;
+}
+.cg-sec > .cg-eyebrow {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: start;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--navy-800);
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  letter-spacing: 0.18em;
+  writing-mode: horizontal-tb;
+  position: relative;
+  padding-top: 3pt;
+}
+.cg-sec > .cg-eyebrow::after {
+  content: "§";
+  display: block;
+  font-family: var(--font-display);
+  font-size: 20pt;
+  font-weight: 300;
+  color: var(--gold-500);
+  letter-spacing: 0;
+  margin-top: 8pt;
+  line-height: 1;
+}
+.cg-sec > *:not(.cg-eyebrow) { grid-column: 2; }
+.cg-sec > *:not(.cg-eyebrow) + *:not(.cg-eyebrow) { margin-top: 10pt; }
+
+.cg-sec-other { display: block; }
+
+/* ---------- Summary — serif-style pull-quote ---------- */
+.cg-summary {
+  font-family: var(--font-display);
+  font-size: 15pt;
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--navy-800);
+  letter-spacing: -0.005em;
+  margin: 0 0 6pt;
+  padding: 0 0 0 22pt;
+  border-left: 3px solid var(--sky-500);
+}
+
+/* Optional drop-cap on the first background paragraph */
+.cg-sec-background .cg-sec-body > p:first-child::first-letter {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32pt;
+  line-height: 0.85;
+  color: var(--navy-800);
+  float: left;
+  padding: 3pt 6pt 0 0;
+  margin-top: 2pt;
+}
+
+.cg-sec-intro {
+  color: var(--fg-2);
+  font-size: 10.5pt;
+  margin-bottom: 8pt;
+}
+
+/* ---------- Legislation — index-table treatment ---------- */
+.cg-leg-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 2px solid var(--navy-800);
+  border-bottom: 2px solid var(--navy-800);
+  background: #fff;
+}
+.cg-leg-card {
+  display: grid;
+  grid-template-columns: 0.9in 1fr 0.8in;
+  column-gap: 14pt;
+  row-gap: 3pt;
+  align-items: start;
+  padding: 11pt 12pt;
+  border-top: 1px solid var(--ink-200);
+  break-inside: avoid;
+  position: relative;
+}
+.cg-leg-card:first-child { border-top: none; }
+.cg-leg-card::before {
+  /* Tab of color along the left edge for jurisdiction categorization. */
+  content: "";
+  position: absolute;
+  top: 6pt;
+  bottom: 6pt;
+  left: 0;
+  width: 3pt;
+  background: var(--sky-500);
+  border-radius: 0 2pt 2pt 0;
+}
+.cg-leg-card:nth-child(4n+2)::before { background: var(--gold-500); }
+.cg-leg-card:nth-child(4n+3)::before { background: #e89560; }
+.cg-leg-card:nth-child(4n+4)::before { background: var(--navy-700); }
+
+.cg-leg-head {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2pt;
+  align-self: start;
+  padding-top: 2pt;
+}
+.cg-leg-juris {
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--navy-800);
+}
+.cg-leg-eff {
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  color: var(--fg-3);
+}
+.cg-leg-title {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 11pt;
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.25;
+  margin: 0;
+  align-self: start;
+  padding-top: 1pt;
+}
+.cg-leg-note {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 9pt;
+  line-height: 1.4;
+  color: var(--fg-3);
+  margin: 0;
+}
+.cg-leg-status {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  display: flex;
+  justify-content: flex-end;
+  align-self: start;
+  padding-top: 2pt;
+}
+
+/* ---------- Key Requirements — numbered entries with rule between ---------- */
+.cg-req-list {
+  display: flex;
+  flex-direction: column;
+}
+.cg-req {
+  display: grid;
+  grid-template-columns: 28pt 1fr;
+  column-gap: 10pt;
+  padding: 10pt 0;
+  border-top: 1px dashed var(--ink-300);
+  break-inside: avoid;
+  align-items: start;
+}
+.cg-req:first-child { border-top: 2px solid var(--navy-800); padding-top: 12pt; }
+.cg-req:last-child { border-bottom: 2px solid var(--navy-800); padding-bottom: 12pt; }
+.cg-req-num {
+  font-family: var(--font-mono);
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--gold-600);
+  letter-spacing: 0;
+  padding-top: 2pt;
+}
+.cg-req-title {
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  margin: 0 0 3pt;
+  letter-spacing: -0.005em;
+}
+.cg-req-copy { margin: 0; }
+
+/* ---------- Tiles — horizontal mini-index row ---------- */
+.cg-tile-row {
+  display: grid;
+  gap: 0;
+  border-top: 1.5px solid var(--navy-800);
+  border-bottom: 1.5px solid var(--navy-800);
+  background: #fff;
+}
+.cg-tile-row.n-3 { grid-template-columns: repeat(3, 1fr); }
+.cg-tile-row.n-4 { grid-template-columns: repeat(4, 1fr); }
+.cg-tile-row.n-5 { grid-template-columns: repeat(5, 1fr); }
+
+.cg-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5pt;
+  padding: 12pt 12pt;
+  border-left: 1px solid var(--ink-200);
+  position: relative;
+}
+.cg-tile:first-child { border-left: none; }
+
+.cg-tile-icon {
+  width: 26pt; height: 26pt;
+  border-radius: 50%;
+  background: var(--sky-500);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cg-tile:nth-child(4n+2) .cg-tile-icon { background: var(--gold-500); }
+.cg-tile:nth-child(4n+3) .cg-tile-icon { background: #e89560; }
+.cg-tile:nth-child(4n+4) .cg-tile-icon { background: var(--navy-700); }
+
+.cg-tile-label {
+  font-family: var(--font-display);
+  font-size: 10pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  line-height: 1.2;
+}
+.cg-tile-sub {
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  color: var(--fg-3);
+  line-height: 1.3;
+}
+
+/* ---------- How to Implement — checklist with tick marks ---------- */
+.cg-check-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9pt;
+}
+.cg-check-item {
+  display: grid;
+  grid-template-columns: 22pt 1fr;
+  gap: 10pt;
+  align-items: start;
+  padding-bottom: 8pt;
+  border-bottom: 1px dotted var(--ink-200);
+  break-inside: avoid;
+}
+.cg-check-item:last-child { border-bottom: none; padding-bottom: 0; }
+.cg-check-marker {
+  display: flex;
+  align-items: center;
+  gap: 4pt;
+  padding-top: 1pt;
+}
+.cg-check-num { display: none; }
+.cg-check-box {
+  width: 14pt;
+  height: 14pt;
+  background: transparent;
+  border: 1.5px solid var(--sky-500);
+  color: var(--sky-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2pt;
+  flex-shrink: 0;
+}
+.cg-check-body { font-size: 10pt; line-height: 1.45; color: var(--fg-2); }
+.cg-check-head {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--navy-800);
+}
+
+/* ---------- Other Factors — sidebar note ---------- */
+.cg-callout {
+  background: #fff;
+  border-top: 3px solid var(--gold-500);
+  border-bottom: 1px solid var(--gold-300);
+  padding: 12pt 16pt;
+  position: relative;
+}
+.cg-callout::before {
+  content: "Note";
+  position: absolute;
+  top: -10pt;
+  left: 14pt;
+  background: var(--gold-500);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 8.5pt;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3pt 8pt;
+  border-radius: 3pt;
+}
+.cg-callout-eyebrow { display: none; }
+.cg-callout-title,
+.cg-sheet .cg-callout-title {
+  font-size: 12pt;
+  font-weight: 700;
+  color: var(--navy-800);
+  margin: 0 0 5pt;
+}
+.cg-callout .cg-callout-body,
+.cg-sheet .cg-callout .cg-callout-body {
+  margin: 0;
+  font-size: 10pt;
+  color: var(--fg-1);
+  line-height: 1.5;
+}
+
+/* ---------- Citations — mono references ---------- */
+.cg-citations {
+  padding-left: 16pt;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 8.5pt;
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+.cg-citations li { margin-bottom: 3pt; }
+
+/* ---------- Footer ---------- */
+.cg-page-foot {
+  margin: auto var(--page-pad-x) 0;
+  padding: 10pt 0 0.35in;
+  border-top: 1px solid var(--ink-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 8pt;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--fg-4);
+}
+.cg-foot-brand {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--navy-700);
+}
